@@ -20,6 +20,10 @@
     <None Update="Config\oAuth.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+
+	  <None Update="Dataset\**\*.csv">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
     <None Update="Documents\ESTRUCTURA_CATEGORIAS_COMPLETO_MOD_SIN.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
