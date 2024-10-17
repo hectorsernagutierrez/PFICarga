@@ -86,26 +86,26 @@ namespace FutbolOntology.DTO
         }
 
         // Method to Read and Parse CSV into DTOs
-        public List<PlayerDTO> ReadPlayers(string filePath)
+        public List<PlayersDTO> ReadPlayers(string filePath)
         {
             using (var reader = new StreamReader(filePath))
             using (var csv = new CsvHelper.CsvReader(reader, CultureInfo.InvariantCulture)) // Fully qualified CsvReader
             {
-                csv.Context.RegisterClassMap<PlayerDTOMap>();
-                var records = csv.GetRecords<PlayerDTO>();
-                return new List<PlayerDTO>(records);
+                csv.Context.RegisterClassMap<PlayersDTOMap>();
+                var records = csv.GetRecords<PlayersDTO>();
+                return new List<PlayersDTO>(records);
             }
         }
 
         // Method to Read and Parse CSV into DTOs
-        public List<PlayerValuationDTO> ReadPlayerValuations(string filePath)
+        public List<PlayerValuationsDTO> ReadPlayerValuations(string filePath)
         {
             using (var reader = new StreamReader(filePath))
             using (var csv = new CsvHelper.CsvReader(reader, CultureInfo.InvariantCulture)) // Fully qualified CsvReader
             {
-                csv.Context.RegisterClassMap<PlayerValuationDTOMap>();
-                var records = csv.GetRecords<PlayerValuationDTO>();
-                return new List<PlayerValuationDTO>(records);
+                csv.Context.RegisterClassMap<PlayerValuationsDTOMap>();
+                var records = csv.GetRecords<PlayerValuationsDTO>();
+                return new List<PlayerValuationsDTO>(records);
             }
         }
 

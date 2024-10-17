@@ -37,19 +37,19 @@ class Program
 
         // Read and display Appearances
         var service = new DTOService();
-        List<AppearancesDTO> appearances = service.ReadAppearances(appearancesFilePath);
-        Console.WriteLine("=== Appearances ===");
-        foreach (var appearance in appearances)
-        {
-            Console.WriteLine($"Player ID: {appearance.PlayerId}, Game ID: {appearance.GameId}, Minutes Played: {appearance.MinutesPlayed}, Was Substitute: {appearance.WasSubstitute}, Was Captain: {appearance.WasCaptain}");
-        }
+        //List<AppearancesDTO> appearances = service.ReadAppearances(appearancesFilePath);
+        //Console.WriteLine("=== Appearances ===");
+        //foreach (var appearance in appearances)
+        //{
+        //    Console.WriteLine($"Player ID: {appearance.PlayerId}, Game ID: {appearance.GameId}, Minutes Played: {appearance.MinutesPlayed}");
+        //}
 
         // Read and display Club Games
         List<ClubGamesDTO> clubGames = service.ReadClubGames(clubGamesFilePath);
         Console.WriteLine("\n=== Club Games ===");
         foreach (var clubGame in clubGames)
         {
-            Console.WriteLine($"Club ID: {clubGame.ClubId}, Game ID: {clubGame.GameId}, Goals Scored: {clubGame.GoalsScored}, Goals Conceded: {clubGame.GoalsConceded}");
+            Console.WriteLine($"Club ID: {clubGame.ClubId}, Game ID: {clubGame.GameId}");
         }
 
         // Read and display Clubs
@@ -57,7 +57,7 @@ class Program
         Console.WriteLine("\n=== Clubs ===");
         foreach (var club in clubs)
         {
-            Console.WriteLine($"Club ID: {club.ClubId}, Name: {club.ClubName}, Country: {club.Country}, Founded Year: {club.FoundedYear}");
+            Console.WriteLine($"Club ID: {club.ClubId}");
         }
 
         // Read and display Competitions
@@ -65,7 +65,7 @@ class Program
         Console.WriteLine("\n=== Competitions ===");
         foreach (var competition in competitions)
         {
-            Console.WriteLine($"Competition ID: {competition.CompetitionId}, Name: {competition.CompetitionName}, Country: {competition.Country}, Type: {competition.Type}");
+            Console.WriteLine($"Competition ID: {competition.CompetitionId}, Type: {competition.Type}");
         }
 
         // Read and display Game Events
@@ -73,7 +73,7 @@ class Program
         Console.WriteLine("\n=== Game Events ===");
         foreach (var gameEvent in gameEvents)
         {
-            Console.WriteLine($"Event ID: {gameEvent.EventId}, Game ID: {gameEvent.GameId}, Player ID: {gameEvent.PlayerId}, Event Type: {gameEvent.EventType}, Minute: {gameEvent.Minute}");
+            Console.WriteLine($"Event ID: {gameEvent.GameEventId}, Game ID: {gameEvent.GameId}, Player ID: {gameEvent.PlayerId}, Event Type: {gameEvent.Type}, Minute: {gameEvent.Minute}");
         }
 
         // Read and display Game Lineups
@@ -81,7 +81,7 @@ class Program
         Console.WriteLine("\n=== Game Lineups ===");
         foreach (var gameLineup in gameLineups)
         {
-            Console.WriteLine($"Game ID: {gameLineup.GameId}, Player ID: {gameLineup.PlayerId}, Position: {gameLineup.Position}, Is Starting Player: {gameLineup.IsStartingPlayer}");
+            Console.WriteLine($"Game ID: {gameLineup.GameId}, Player ID: {gameLineup.PlayerId}, Position: {gameLineup.Position}");
         }
 
         // Read and display Games
@@ -89,11 +89,11 @@ class Program
         Console.WriteLine("\n=== Games ===");
         foreach (var game in games)
         {
-            Console.WriteLine($"Game ID: {game.GameId}, Date: {game.Date}, Home Team ID: {game.HomeTeamId}, Away Team ID: {game.AwayTeamId}, Home Goals: {game.HomeGoals}, Away Goals: {game.AwayGoals}");
+            Console.WriteLine($"Game ID: {game.GameId}, Date: {game.Date}, Home Team ID: {game.HomeClubId}, Away Team ID: {game.AwayClubId}, Home Goals: {game.HomeClubGoals}, Away Goals: {game.AwayClubGoals}");
         }
 
         // Read and display Player Valuations
-        List<PlayerValuationDTO> playerValuations = service.ReadPlayerValuations(playerValuationsFilePath);
+        List<PlayerValuationsDTO> playerValuations = service.ReadPlayerValuations(playerValuationsFilePath);
         Console.WriteLine("\n=== Player Valuations ===");
         foreach (var valuation in playerValuations)
         {
@@ -101,7 +101,7 @@ class Program
         }
 
         // Read and display Players
-        List<PlayerDTO> players = service.ReadPlayers(playersFilePath);
+        List<PlayersDTO> players = service.ReadPlayers(playersFilePath);
         Console.WriteLine("\n=== Players ===");
         foreach (var player in players)
         {
@@ -113,7 +113,7 @@ class Program
         Console.WriteLine("\n=== Transfers ===");
         foreach (var transfer in transfers)
         {
-            Console.WriteLine($"Transfer ID: {transfer.TransferId}, Player ID: {transfer.PlayerId}, From Club ID: {transfer.FromClubId}, To Club ID: {transfer.ToClubId}, Transfer Fee: {transfer.TransferFee}, Transfer Date: {transfer.TransferDate}");
+            Console.WriteLine($" Player ID: {transfer.PlayerId}, From Club ID: {transfer.FromClubId}, To Club ID: {transfer.ToClubId}, Transfer Fee: {transfer.TransferFee}, Transfer Date: {transfer.TransferDate}");
         }
     }
 }

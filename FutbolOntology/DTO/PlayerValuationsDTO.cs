@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 
-public class PlayerValuationDTO
+public class PlayerValuationsDTO
 {
     public int PlayerId { get; set; }
     public string Date { get; set; }
@@ -16,7 +16,7 @@ public class PlayerValuationDTO
 // CSV Configuration for PlayerValuation
 
 
-public class PlayerValuationsDTO
+public class PlayerValuationDTO
 {
     public int PlayerId { get; set; }
     public DateTime Date { get; set; }
