@@ -9,7 +9,7 @@ public class GameEventsDTO
 {
     public string GameEventId { get; set; }
     public DateTime Date { get; set; }
-    public int GameId { get; set; }
+    public string GameId { get; set; }
     public int Minute { get; set; }
     public string Type { get; set; }
     public int ClubId { get; set; }

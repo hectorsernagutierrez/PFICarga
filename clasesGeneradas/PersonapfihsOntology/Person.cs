@@ -68,15 +68,7 @@ namespace PersonapfihsOntology
 			{
 				Schema_birthPlace = new PostalAddress(propSchema_birthPlace.PropertyValues[0].RelatedEntity,idiomaUsuario);
 			}
-			SemanticPropertyModel propSchema_identifier = pSemCmsModel.GetPropertyByPath("https://schema.org/identifier");
-			this.Schema_identifier = new List<string>();
-			if (propSchema_identifier != null && propSchema_identifier.PropertyValues.Count > 0)
-			{
-				foreach (SemanticPropertyModel.PropertyValue propValue in propSchema_identifier.PropertyValues)
-				{
-					this.Schema_identifier.Add(propValue.Value);
-				}
-			}
+			this.Schema_identifier = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("https://schema.org/identifier"));
 			SemanticPropertyModel propSchema_award = pSemCmsModel.GetPropertyByPath("https://schema.org/award");
 			this.Schema_award = new List<string>();
 			if (propSchema_award != null && propSchema_award.PropertyValues.Count > 0)
@@ -146,15 +138,7 @@ namespace PersonapfihsOntology
 			{
 				Schema_birthPlace = new PostalAddress(propSchema_birthPlace.PropertyValues[0].RelatedEntity,idiomaUsuario);
 			}
-			SemanticPropertyModel propSchema_identifier = pSemCmsModel.GetPropertyByPath("https://schema.org/identifier");
-			this.Schema_identifier = new List<string>();
-			if (propSchema_identifier != null && propSchema_identifier.PropertyValues.Count > 0)
-			{
-				foreach (SemanticPropertyModel.PropertyValue propValue in propSchema_identifier.PropertyValues)
-				{
-					this.Schema_identifier.Add(propValue.Value);
-				}
-			}
+			this.Schema_identifier = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("https://schema.org/identifier"));
 			SemanticPropertyModel propSchema_award = pSemCmsModel.GetPropertyByPath("https://schema.org/award");
 			this.Schema_award = new List<string>();
 			if (propSchema_award != null && propSchema_award.PropertyValues.Count > 0)
@@ -204,7 +188,7 @@ namespace PersonapfihsOntology
 
 		[LABEL(LanguageEnum.es,"Id")]
 		[RDFProperty("https://schema.org/identifier")]
-		public  List<string> Schema_identifier { get; set;}
+		public  string Schema_identifier { get; set;}
 
 		[LABEL(LanguageEnum.es,"Premios")]
 		[LABEL(LanguageEnum.en,"Awards")]
@@ -240,7 +224,7 @@ namespace PersonapfihsOntology
 		{
 			base.GetProperties();
 			propList.Add(new ListStringOntologyProperty("eschema:i_club", this.IdsEschema_i_club));
-			propList.Add(new ListStringOntologyProperty("schema:identifier", this.Schema_identifier));
+			propList.Add(new StringOntologyProperty("schema:identifier", this.Schema_identifier));
 			propList.Add(new ListStringOntologyProperty("schema:award", this.Schema_award));
 			propList.Add(new StringOntologyProperty("schema:height", this.Schema_height.ToString()));
 			propList.Add(new StringOntologyProperty("schema:description", this.Schema_description));
@@ -391,10 +375,7 @@ namespace PersonapfihsOntology
 				}
 				if(this.Schema_identifier != null)
 				{
-					foreach(var item2 in this.Schema_identifier)
-					{
-						AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Person_{ResourceID}_{ArticleID}", "https://schema.org/identifier", $"\"{GenerarTextoSinSaltoDeLinea(item2)}\"", list, " . ");
-					}
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Person_{ResourceID}_{ArticleID}", "https://schema.org/identifier",  $"\"{GenerarTextoSinSaltoDeLinea(this.Schema_identifier)}\"", list, " . ");
 				}
 				if(this.Schema_award != null)
 				{
@@ -524,10 +505,7 @@ namespace PersonapfihsOntology
 				}
 				if(this.Schema_identifier != null)
 				{
-					foreach(var item2 in this.Schema_identifier)
-					{
-						AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "https://schema.org/identifier", $"\"{GenerarTextoSinSaltoDeLinea(item2)}\"", list, " . ");
-					}
+					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "https://schema.org/identifier",  $"\"{GenerarTextoSinSaltoDeLinea(this.Schema_identifier)}\"", list, " . ");
 				}
 				if(this.Schema_award != null)
 				{

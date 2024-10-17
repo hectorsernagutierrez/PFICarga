@@ -50,15 +50,7 @@ namespace ClubpfihsOntology
 					}
 				}
 			}
-			SemanticPropertyModel propSchema_identifier = pSemCmsModel.GetPropertyByPath("https://schema.org/identifier");
-			this.Schema_identifier = new List<string>();
-			if (propSchema_identifier != null && propSchema_identifier.PropertyValues.Count > 0)
-			{
-				foreach (SemanticPropertyModel.PropertyValue propValue in propSchema_identifier.PropertyValues)
-				{
-					this.Schema_identifier.Add(propValue.Value);
-				}
-			}
+			this.Schema_identifier = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("https://schema.org/identifier"));
 			this.Schema_logo = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("https://schema.org/logo"));
 			SemanticPropertyModel propSchema_award = pSemCmsModel.GetPropertyByPath("https://schema.org/award");
 			this.Schema_award = new List<string>();
@@ -121,15 +113,7 @@ namespace ClubpfihsOntology
 					}
 				}
 			}
-			SemanticPropertyModel propSchema_identifier = pSemCmsModel.GetPropertyByPath("https://schema.org/identifier");
-			this.Schema_identifier = new List<string>();
-			if (propSchema_identifier != null && propSchema_identifier.PropertyValues.Count > 0)
-			{
-				foreach (SemanticPropertyModel.PropertyValue propValue in propSchema_identifier.PropertyValues)
-				{
-					this.Schema_identifier.Add(propValue.Value);
-				}
-			}
+			this.Schema_identifier = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("https://schema.org/identifier"));
 			this.Schema_logo = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("https://schema.org/logo"));
 			SemanticPropertyModel propSchema_award = pSemCmsModel.GetPropertyByPath("https://schema.org/award");
 			this.Schema_award = new List<string>();
@@ -179,7 +163,7 @@ namespace ClubpfihsOntology
 
 		[LABEL(LanguageEnum.es,"Id")]
 		[RDFProperty("https://schema.org/identifier")]
-		public  List<string> Schema_identifier { get; set;}
+		public  string Schema_identifier { get; set;}
 
 		[LABEL(LanguageEnum.es,"Logo")]
 		[RDFProperty("https://schema.org/logo")]
@@ -214,7 +198,7 @@ namespace ClubpfihsOntology
 		internal override void GetProperties()
 		{
 			base.GetProperties();
-			propList.Add(new ListStringOntologyProperty("schema:identifier", this.Schema_identifier));
+			propList.Add(new StringOntologyProperty("schema:identifier", this.Schema_identifier));
 			propList.Add(new StringOntologyProperty("schema:logo", this.Schema_logo));
 			propList.Add(new ListStringOntologyProperty("schema:award", this.Schema_award));
 			propList.Add(new ListStringOntologyProperty("schema:alternateName", this.Schema_alternateName));
@@ -325,6 +309,10 @@ namespace ClubpfihsOntology
 						AgregarTripleALista($"{resourceAPI.GraphsUrl}items/SportsTeam_{ResourceID}_{item0.ArticleID}", "https://schema.org/extended/i_winner", $"<{item2}>", list, " . ");
 					}
 				}
+				if(item0.Eschema_identifier != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/SportsTeam_{ResourceID}_{item0.ArticleID}", "https://schema.org/extended/identifier",  $"\"{GenerarTextoSinSaltoDeLinea(item0.Eschema_identifier)}\"", list, " . ");
+				}
 			}
 			}
 			if(this.Schema_location != null)
@@ -359,10 +347,7 @@ namespace ClubpfihsOntology
 			}
 				if(this.Schema_identifier != null)
 				{
-					foreach(var item2 in this.Schema_identifier)
-					{
-						AgregarTripleALista($"{resourceAPI.GraphsUrl}items/SportsClub_{ResourceID}_{ArticleID}", "https://schema.org/identifier", $"\"{GenerarTextoSinSaltoDeLinea(item2)}\"", list, " . ");
-					}
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/SportsClub_{ResourceID}_{ArticleID}", "https://schema.org/identifier",  $"\"{GenerarTextoSinSaltoDeLinea(this.Schema_identifier)}\"", list, " . ");
 				}
 				if(this.Schema_logo != null)
 				{
@@ -486,6 +471,10 @@ namespace ClubpfihsOntology
 						AgregarTripleALista($"{resourceAPI.GraphsUrl}items/SportsTeam_{ResourceID}_{item0.ArticleID}", "https://schema.org/extended/i_winner", $"<{itemRegex}>", list, " . ");
 					}
 				}
+				if(item0.Eschema_identifier != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/SportsTeam_{ResourceID}_{item0.ArticleID}", "https://schema.org/extended/identifier",  $"\"{GenerarTextoSinSaltoDeLinea(item0.Eschema_identifier)}\"", list, " . ");
+				}
 			}
 			}
 			if(this.Schema_location != null)
@@ -518,10 +507,7 @@ namespace ClubpfihsOntology
 			}
 				if(this.Schema_identifier != null)
 				{
-					foreach(var item2 in this.Schema_identifier)
-					{
-						AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "https://schema.org/identifier", $"\"{GenerarTextoSinSaltoDeLinea(item2)}\"", list, " . ");
-					}
+					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "https://schema.org/identifier",  $"\"{GenerarTextoSinSaltoDeLinea(this.Schema_identifier)}\"", list, " . ");
 				}
 				if(this.Schema_logo != null)
 				{

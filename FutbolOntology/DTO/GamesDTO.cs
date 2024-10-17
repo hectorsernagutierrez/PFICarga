@@ -7,13 +7,13 @@ using System.IO;
 
 public class GamesDTO
 {
-    public int GameId { get; set; }
+    public string GameId { get; set; }
     public string CompetitionId { get; set; }
     public string Season { get; set; }
     public string Round { get; set; }
     public DateTime Date { get; set; }
-    public int HomeClubId { get; set; }
-    public int AwayClubId { get; set; }
+    public string HomeClubId { get; set; }
+    public string AwayClubId { get; set; }
     public int HomeClubGoals { get; set; }
     public int AwayClubGoals { get; set; }
     public string HomeClubPosition { get; set; }

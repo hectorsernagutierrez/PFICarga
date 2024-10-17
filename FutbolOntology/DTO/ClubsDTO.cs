@@ -7,7 +7,7 @@ using System.IO;
 
 public class ClubsDTO
 {
-    public int ClubId { get; set; }
+    public string ClubId { get; set; }
     public string ClubCode { get; set; }
     public string Name { get; set; }
     public string DomesticCompetitionId { get; set; }

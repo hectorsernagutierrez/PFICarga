@@ -9,9 +9,9 @@ public class GameLineupsDTO
 {
     public string GameLineupsId { get; set; }
     public DateTime Date { get; set; }
-    public int GameId { get; set; }
-    public int PlayerId { get; set; }
-    public int ClubId { get; set; }
+    public string GameId { get; set; }
+    public string PlayerId { get; set; }
+    public string ClubId { get; set; }
     public string PlayerName { get; set; }
     public string Type { get; set; }
     public string Position { get; set; }
