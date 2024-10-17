@@ -36,7 +36,7 @@ public class GamesDTO
 // CSV Configuration for Games
 
 
-public sealed class GamesDTOMap : ClassMap<GameDTO>
+public sealed class GamesDTOMap : ClassMap<GamesDTO>
 {
     public GamesDTOMap()
     {
