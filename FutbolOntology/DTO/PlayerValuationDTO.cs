@@ -14,9 +14,21 @@ public class PlayerValuationDTO
 }
 
 // CSV Configuration for PlayerValuation
-public sealed class PlayerValuationDTOMap : ClassMap<PlayerValuationDTO>
+
+
+public class PlayerValuationsDTO
 {
-    public PlayerValuationDTOMap()
+    public int PlayerId { get; set; }
+    public DateTime Date { get; set; }
+    public long MarketValueInEur { get; set; }
+    public int CurrentClubId { get; set; }
+    public string PlayerClubDomesticCompetitionId { get; set; }
+}
+
+
+public sealed class PlayerValuationsDTOMap : ClassMap<PlayerValuationsDTO>
+{
+    public PlayerValuationsDTOMap()
     {
         Map(m => m.PlayerId).Name("player_id");
         Map(m => m.Date).Name("date");
@@ -25,5 +37,6 @@ public sealed class PlayerValuationDTOMap : ClassMap<PlayerValuationDTO>
         Map(m => m.PlayerClubDomesticCompetitionId).Name("player_club_domestic_competition_id");
     }
 }
+
 
 
