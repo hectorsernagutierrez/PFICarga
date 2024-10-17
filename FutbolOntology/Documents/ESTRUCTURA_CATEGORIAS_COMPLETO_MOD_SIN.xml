@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Thesaurus>
+  <Categories>
+    <Category>
+      <Name>People</Name>
+      <ID>0000000-0000-0000-0000-900000000401</ID>
+      <Category>
+        <Name>Players</Name>
+        <ID>0000000-0000-0000-0000-900000000411</ID>
+         </Category>
+		<Category>
+          <Name>Coach</Name>
+           <ID>0000000-0000-0000-0000-900000000412</ID>       
+      </Category>
+    </Category>
+	  <Category>
+		  <Name>Club</Name>
+		  <ID>0000000-0000-0000-0000-900000000301</ID>
+	  </Category>
+	  <Category>
+		  <Name>Tournament</Name>
+		  <ID>f0000000-0000-0000-0000-900000000201</ID>
+	  </Category>
+	  <Category>
+		  <Name>Federation</Name>
+		  <ID>0000000-0000-0000-0000-900000000101</ID>
+		  <Category>
+			  <Name>FIFA (International)</Name>
+			  <ID>90000000-0000-0000-0000-900000000001</ID>
+		  </Category>
+		  <Category>
+			  <Name>UEFA(Europe)</Name>
+			  <ID>90000000-0000-0000-0000-900000000010</ID>
+			  <Category>
+				  <Name>FA (English)</Name>
+				  <ID>90000000-0000-0000-0000-900000000011</ID>
+			  </Category>
+			  <Category>
+				  <Name>RFEF (Spanish)</Name>
+				  <ID>90000000-0000-0000-0000-900000000012</ID>
+			  </Category>
+			  <Category>
+				  <Name>DFB (German)</Name>
+				  <ID>90000000-0000-0000-0000-900000000013</ID>
+			  </Category>
+			  <Category>
+				  <Name>FIGC (Italian)</Name>
+				  <ID>9000000-0000-0000-0000-900000000014</ID>
+			  </Category>
+			  <Category>
+				  <Name>FFF (French)</Name>
+				  <ID>90000000-0000-0000-0000-900000000015</ID>
+			  </Category>
+			  <Category>
+				  <Name>KNVB (Holand)</Name>
+				  <ID>90000000-0000-0000-0000-900000000016</ID>
+			  </Category>
+			  <Category>
+				  <Name>SFA (Scotish)</Name>
+				  <ID>90000000-0000-0000-0000-900000000017</ID>
+			  </Category>
+		  </Category>
+	  </Category>
+  </Categories>
+</Thesaurus>
