@@ -20,10 +20,10 @@ public class AppearancesDTO
     public string playerName { get; set; }
     public string competitionId { get; set; }
     public string yellowCards { get; set; }
-    public string appearance_id { get; set; }
-    public string appearance_id { get; set; }
-    public string appearance_id { get; set; }
-    public string appearance_id { get; set; }
+    public string redCards { get; set; }
+    public string goals { get; set; }
+    public string assists { get; set; }
+    public string minutesPlayed { get; set; }
 }
 
 // CSV Configuration for Appearances
@@ -39,12 +39,12 @@ public sealed class AppearancesDTOMap : ClassMap<AppearancesDTO>
         Map(m => m.playerCurrentClubId).Name("player_current_club_id");
         Map(m => m.date).Name("date");
         Map(m => m.playerName).Name("player_name");
-        Map(m => m.playerName).Name("competition_id");
-        Map(m => m.playerName).Name("yellow_cards");
-        Map(m => m.playerName).Name("red_cards");
-        Map(m => m.playerName).Name("goals");
-        Map(m => m.playerName).Name("assists");
-        Map(m => m.playerName).Name("minutes_played");
+        Map(m => m.competitionId).Name("competition_id");
+        Map(m => m.yellowCards).Name("yellow_cards");
+        Map(m => m.redCards).Name("red_cards");
+        Map(m => m.goals).Name("goals");
+        Map(m => m.assists).Name("assists");
+        Map(m => m.minutesPlayed).Name("minutes_played");
 
         
     }
