@@ -92,7 +92,7 @@ namespace FutbolOntology.CargaPFI
                     SportsEvent sportsEvent = new SportsEvent();
                     sportsEvent.Eschema_identifier_partido = game.GameId;
                     sportsEvent.Eschema_result = $"{game.HomeClubName} : {game.HomeClubGoals}  - {game.AwayClubGoals} : {game.AwayClubName}  ";
-                    sportsEvent.Schema_subEvent = CargarEventos(rutaDirectorioEvento, game);
+                   
                     //AwayTeam
                     TorneopfihsOntology.SportsTeam away = IniciarTeams(rutaDirectorioClub, game.AwayClubId);
                     away.IdsSchema_coach.Add(getManager(game.AwayClubManagerName));
@@ -124,6 +124,8 @@ namespace FutbolOntology.CargaPFI
                     home.Eschema_classification = int.TryParse(game.HomeClubPosition, out var result2) ? result2 : (int?)null;
                     home.Schema_athlete = listAthletesHome;
                     sportsEvent.Schema_homeTeam = home;
+                    
+                    sportsEvent.Schema_subEvent = CargarEventos(rutaDirectorioEvento, game,sportsEvent);
 
 
 
@@ -238,7 +240,7 @@ namespace FutbolOntology.CargaPFI
         }
 
 
-        public string getPlayer(string name,string rutaDirectorioPersonaValoracion)
+        public string getPlayerUrl(string name,string rutaDirectorioPersonaValoracion)
         {
 
             SparqlObject resultado = null;
@@ -402,7 +404,7 @@ namespace FutbolOntology.CargaPFI
         public PersonLinedUp getPlayerAlineado(GameLineupsDTO player, string rutaDirectorioPersonaValoracion)
         {
             PersonLinedUp person = new PersonLinedUp();
-            person.IdEschema_player = getPlayer(player.PlayerName, rutaDirectorioPersonaValoracion);            
+            person.IdEschema_player = getPlayerUrl(player.PlayerName, rutaDirectorioPersonaValoracion);            
             person.Eschema_bibNumber = int.TryParse(player.NumberString, out var result) ? result : 0;
             person.IdEschema_type = getTipoUrl(player.Type);
             person.IdEschema_position= getTipoUrl(player.Position); 
@@ -413,7 +415,7 @@ namespace FutbolOntology.CargaPFI
 
 
 
-        public List<Event> CargarEventos(string rutaDirectorioEvento, GamesDTO game)
+        public List<Event> CargarEventos(string rutaDirectorioEvento, GamesDTO game,SportsEvent match)
         {
             var service = new DTOService();
             List<GameEventsDTO> events = service.ReadGameEvents(rutaDirectorioEvento);
@@ -429,8 +431,16 @@ namespace FutbolOntology.CargaPFI
 
                     string uri = getTipoUrl(evento.Type);
                     eventoEvent.IdSchema_about = uri;
-                    eventoEvent.Schema_actor = GetPersonLinedUp(evento.Pl);
-
+                  
+                    List<PersonLinedUp> p = match.Schema_homeTeam.Schema_athlete;
+                    List<PersonLinedUp> c=(match.Schema_awayTeam.Schema_athlete);
+                  foreach(PersonLinedUp player in p.Concat<PersonLinedUp>(c))
+                    {
+                        if (player.Eschema_player.Schema_identifier == evento.PlayerId)
+                        {
+                            eventoEvent.Schema_actor = player;
+                        }
+                    }
                     eventos.Add(eventoEvent);   
                 }
 

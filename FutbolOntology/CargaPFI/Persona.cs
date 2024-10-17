@@ -41,11 +41,10 @@ namespace FutbolOntology.CargaPFI
             List<PlayerValuationsDTO> playerValuations = service.ReadPlayerValuations(rutaDirectorioPersonaValoracion);
             foreach (var player in players)
             {
-                string uri = CargarPersonaAClub(player, playerValuations);
-            }
+                string uri = CargarPersonaSola(player, playerValuations);
+            
+            }          
            
-
-
          }
 
         public string CargarPersonaSola(PlayersDTO player, List<PlayerValuationsDTO> playerValuations)
