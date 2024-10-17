@@ -16,19 +16,19 @@ public class PlayersDTO
     public string CountryOfBirth { get; set; }
     public string CityOfBirth { get; set; }
     public string CountryOfCitizenship { get; set; }
-    public DateTime DateOfBirth { get; set; }
+    public DateTime? DateOfBirth { get; set; }
     public string SubPosition { get; set; }
     public string Position { get; set; }
     public string Foot { get; set; }
-    public int HeightInCm { get; set; }
-    public DateTime ContractExpirationDate { get; set; }
+    public int? HeightInCm { get; set; }
+    public DateTime? ContractExpirationDate { get; set; }
     public string AgentName { get; set; }
     public string ImageUrl { get; set; }
     public string Url { get; set; }
     public string CurrentClubDomesticCompetitionId { get; set; }
     public string CurrentClubName { get; set; }
-    public long MarketValueInEur { get; set; }
-    public long HighestMarketValueInEur { get; set; }
+    public long? MarketValueInEur { get; set; }
+    public long? HighestMarketValueInEur { get; set; }
 }
 
 

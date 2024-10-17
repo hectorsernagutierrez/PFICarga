@@ -7,7 +7,7 @@ using System.IO;
 
 public class GameLineupsDTO
 {
-    public int GameLineupsId { get; set; }
+    public string GameLineupsId { get; set; }
     public DateTime Date { get; set; }
     public int GameId { get; set; }
     public int PlayerId { get; set; }
@@ -15,7 +15,8 @@ public class GameLineupsDTO
     public string PlayerName { get; set; }
     public string Type { get; set; }
     public string Position { get; set; }
-    public int Number { get; set; }
+    public string? NumberString { get; set; }
+    public int? Number { get; set; }
     public bool TeamCaptain { get; set; }
 }
 
@@ -35,7 +36,7 @@ public sealed class GameLineupsDTOMap : ClassMap<GameLineupsDTO>
         Map(m => m.PlayerName).Name("player_name");
         Map(m => m.Type).Name("type");
         Map(m => m.Position).Name("position");
-        Map(m => m.Number).Name("number");
+        Map(m => m.NumberString).Name("number");        
         Map(m => m.TeamCaptain).Name("team_captain");
     }
 }
