@@ -23,7 +23,7 @@ namespace OrganizacionpfihsOntology
 	{
 		public Organization(string pIdentificador) : base()
 		{
-			Identificador = pIdentificador;
+			Identificador = pIdentificador;	
 		}
 
 		public Organization(SemanticEntityModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()

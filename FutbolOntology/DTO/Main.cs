@@ -33,16 +33,20 @@ class Program
         string playersFilePath = Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase, playersFile);
         string transfersFilePath = Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase, transfersFile);
 
-
+ var service = new DTOService();
 
         // Read and display Appearances
-        var service = new DTOService();
+
         List<AppearancesDTO> appearances = service.ReadAppearances(appearancesFilePath);
         Console.WriteLine("=== Appearances ===");
         foreach (var appearance in appearances)
         {
             Console.WriteLine($"Player ID: {appearance.PlayerId}, Game ID: {appearance.GameId}, Minutes Played: {appearance.MinutesPlayed}");
         }
+
+
+
+
 
         // Read and display Club Games
         List<ClubGamesDTO> clubGames = service.ReadClubGames(clubGamesFilePath);
@@ -65,7 +69,7 @@ class Program
         Console.WriteLine("\n=== Competitions ===");
         foreach (var competition in competitions)
         {
-            Console.WriteLine($"Competition ID: {competition.CompetitionId}, Type: {competition.Type}");
+            Console.WriteLine($"Competition ID: {competition.CompetitionId}, Type: {competition.Type} ,Subtype {competition.SubType}, confederacion {competition.Confederation}{competition.DomesticLeagueCode}");
         }
 
         // Read and display Game Events

@@ -23,7 +23,7 @@ namespace PosicionpfihsOntology
 	{
 		public Position(string pIdentificador) : base()
 		{
-			Identificador = pIdentificador;	
+			Identificador = pIdentificador;
 		}
 
 		public Position(SemanticEntityModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()

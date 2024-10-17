@@ -71,6 +71,7 @@ namespace ClubpfihsOntology
 					}
 				}
 			}
+			this.Eschema_identifier = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("https://schema.org/extended/identifier"));
 		}
 
 		public virtual string RdfType { get { return "https://schema.org/SportsTeam"; } }
@@ -101,6 +102,9 @@ namespace ClubpfihsOntology
 		public  List<SportsTournament> Eschema_i_winner { get; set;}
 		public List<string> IdsEschema_i_winner { get; set;}
 
+		[RDFProperty("https://schema.org/extended/identifier")]
+		public  string Eschema_identifier { get; set;}
+
 
 		internal override void GetProperties()
 		{
@@ -109,6 +113,7 @@ namespace ClubpfihsOntology
 			propList.Add(new ListStringOntologyProperty("schema:coach", this.IdsSchema_coach));
 			propList.Add(new ListStringOntologyProperty("schema:athlete", this.IdsSchema_athlete));
 			propList.Add(new ListStringOntologyProperty("eschema:i_winner", this.IdsEschema_i_winner));
+			propList.Add(new StringOntologyProperty("eschema:identifier", this.Eschema_identifier));
 		}
 
 		internal override void GetEntities()

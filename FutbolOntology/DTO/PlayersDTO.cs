@@ -6,7 +6,7 @@ using System.IO;
 
 public class PlayersDTO
 {
-    public int PlayerId { get; set; }
+    public string PlayerId { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public string Name { get; set; }

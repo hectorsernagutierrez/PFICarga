@@ -58,15 +58,7 @@ namespace TorneopfihsOntology
 				}
 			}
 			this.Schema_name = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("https://schema.org/name"));
-			SemanticPropertyModel propSchema_identifier = pSemCmsModel.GetPropertyByPath("https://schema.org/identifier");
-			this.Schema_identifier = new List<string>();
-			if (propSchema_identifier != null && propSchema_identifier.PropertyValues.Count > 0)
-			{
-				foreach (SemanticPropertyModel.PropertyValue propValue in propSchema_identifier.PropertyValues)
-				{
-					this.Schema_identifier.Add(propValue.Value);
-				}
-			}
+			this.Schema_identifier = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("https://schema.org/identifier"));
 			this.Schema_description = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("https://schema.org/description"));
 		}
 
@@ -104,15 +96,7 @@ namespace TorneopfihsOntology
 				}
 			}
 			this.Schema_name = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("https://schema.org/name"));
-			SemanticPropertyModel propSchema_identifier = pSemCmsModel.GetPropertyByPath("https://schema.org/identifier");
-			this.Schema_identifier = new List<string>();
-			if (propSchema_identifier != null && propSchema_identifier.PropertyValues.Count > 0)
-			{
-				foreach (SemanticPropertyModel.PropertyValue propValue in propSchema_identifier.PropertyValues)
-				{
-					this.Schema_identifier.Add(propValue.Value);
-				}
-			}
+			this.Schema_identifier = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("https://schema.org/identifier"));
 			this.Schema_description = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("https://schema.org/description"));
 		}
 
@@ -142,7 +126,7 @@ namespace TorneopfihsOntology
 
 		[LABEL(LanguageEnum.es,"Id")]
 		[RDFProperty("https://schema.org/identifier")]
-		public  List<string> Schema_identifier { get; set;}
+		public  string Schema_identifier { get; set;}
 
 		[LABEL(LanguageEnum.es,"")]
 		[RDFProperty("https://schema.org/description")]
@@ -155,7 +139,7 @@ namespace TorneopfihsOntology
 			propList.Add(new StringOntologyProperty("eschema:winner", this.IdEschema_winner));
 			propList.Add(new ListStringOntologyProperty("schema:organizer", this.IdsSchema_organizer));
 			propList.Add(new StringOntologyProperty("schema:name", this.Schema_name));
-			propList.Add(new ListStringOntologyProperty("schema:identifier", this.Schema_identifier));
+			propList.Add(new StringOntologyProperty("schema:identifier", this.Schema_identifier));
 			propList.Add(new StringOntologyProperty("schema:description", this.Schema_description));
 		}
 
@@ -393,10 +377,7 @@ namespace TorneopfihsOntology
 				}
 				if(this.Schema_identifier != null)
 				{
-					foreach(var item2 in this.Schema_identifier)
-					{
-						AgregarTripleALista($"{resourceAPI.GraphsUrl}items/SportsTournament_{ResourceID}_{ArticleID}", "https://schema.org/identifier", $"\"{GenerarTextoSinSaltoDeLinea(item2)}\"", list, " . ");
-					}
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/SportsTournament_{ResourceID}_{ArticleID}", "https://schema.org/identifier",  $"\"{GenerarTextoSinSaltoDeLinea(this.Schema_identifier)}\"", list, " . ");
 				}
 				if(this.Schema_description != null)
 				{
@@ -742,10 +723,7 @@ namespace TorneopfihsOntology
 				}
 				if(this.Schema_identifier != null)
 				{
-					foreach(var item2 in this.Schema_identifier)
-					{
-						AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "https://schema.org/identifier", $"\"{GenerarTextoSinSaltoDeLinea(item2)}\"", list, " . ");
-					}
+					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "https://schema.org/identifier",  $"\"{GenerarTextoSinSaltoDeLinea(this.Schema_identifier)}\"", list, " . ");
 				}
 				if(this.Schema_description != null)
 				{

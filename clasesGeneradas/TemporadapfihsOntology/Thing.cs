@@ -23,7 +23,7 @@ namespace TemporadapfihsOntology
 	{
 		public Thing(string pIdentificador) : base()
 		{
-			Identificador = Identificador;
+			Identificador = pIdentificador;
 		}
 
 		public Thing(SemanticEntityModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
