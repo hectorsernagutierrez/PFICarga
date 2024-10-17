@@ -12,11 +12,11 @@ public class GameEventsDTO
     public string GameId { get; set; }
     public int Minute { get; set; }
     public string Type { get; set; }
-    public int ClubId { get; set; }
-    public int PlayerId { get; set; }
+    public string ClubId { get; set; }
+    public string PlayerId { get; set; }
     public string Description { get; set; }
-    public int? PlayerInId { get; set; }
-    public int? PlayerAssistId { get; set; }
+    public string? PlayerInId { get; set; }
+    public string? PlayerAssistId { get; set; }
 }
 
 
