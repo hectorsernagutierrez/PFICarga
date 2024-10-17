@@ -36,3 +36,34 @@ WHERE {
   SERVICE wikibase:label { bd:serviceParam wikibase:language "es,en". }
 }
 LIMIT 10
+
+
+------------------------------------------------
+
+
+SELECT ?club ?clubLabel ?coachRole ?coachRoleLabel 
+WHERE {
+ # Football club instance
+  ?club wdt:P31 wd:Q476028.
+  
+  # Filter by primary label or alternative name, limiting to Spanish and English
+  ?club rdfs:label ?clubLabel.
+  
+  FILTER(LANG(?clubLabel) = "es" || LANG(?clubLabel) = "en").
+  # Filter for 'Real Madrid' in club name or alternative name
+  OPTIONAL { ?club wdt:P4970 ?alternativeName. }
+  FILTER(CONTAINS(LCASE(?clubLabel), "barcelona") || CONTAINS(LCASE(?alternativeName), "barça")).
+  
+
+  # Obtener entrenadores (posición ocupada) y fechas asociadas
+  ?club wdt:P286 ?coachRole.  # El entrenador es miembro del club
+  
+
+  
+
+  # Limitar los resultados en español o inglés
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "es,en". }
+}
+
+LIMIT 100
+
