@@ -9,16 +9,31 @@ class Program
     static void Main(string[] args)
     {
         // Paths to CSV files (update paths if needed)
-        string appearancesFilePath = "path/to/appearances.csv";
-        string clubGamesFilePath = "path/to/club_games.csv";
-        string clubsFilePath = "path/to/clubs.csv";
-        string competitionsFilePath = "path/to/competitions.csv";
-        string gameEventsFilePath = "path/to/game_events.csv";
-        string gameLineupsFilePath = "path/to/game_lineups.csv";
-        string gamesFilePath = "path/to/games.csv";
-        string playerValuationsFilePath = "path/to/player_valuations.csv";
-        string playersFilePath = "path/to/players.csv";
-        string transfersFilePath = "path/to/transfers.csv";
+       
+        
+        string appearancesFile = @"Dataset/appearances.csv";
+        string clubGamesFile = @"Dataset/club_games.csv";
+        string clubsFile = @"Dataset/clubs.csv";
+        string competitionsFile = @"Dataset/competitions.csv";
+        string gameEventsFile = @"Dataset/game_events.csv";
+        string gameLineupsFile = @"Dataset/game_lineups.csv";
+        string gamesFile = @"Dataset/games.csv";
+        string playerValuationsFile = @"Dataset/player_valuations.csv";
+        string playersFile = @"Dataset/players.csv";
+        string transfersFile = @"Dataset/transfers.csv";
+
+        string appearancesFilePath = Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase, appearancesFile);
+        string clubGamesFilePath = Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase, clubGamesFile);
+        string clubsFilePath = Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase, clubsFile);
+        string competitionsFilePath = Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase, competitionsFile);
+        string gameEventsFilePath = Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase, gameEventsFile);
+        string gameLineupsFilePath = Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase, gameLineupsFile);
+        string gamesFilePath = Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase, gamesFile);
+        string playerValuationsFilePath = Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase, playerValuationsFile);
+        string playersFilePath = Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase, playersFile);
+        string transfersFilePath = Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase, transfersFile);
+
+
 
         // Read and display Appearances
         var service = new DTOService();
