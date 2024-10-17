@@ -17,7 +17,7 @@ public class ClubGamesDTO
     public int OpponentGoals { get; set; }
     public string OpponentPosition { get; set; }
     public string OpponentManagerName { get; set; }
-    public bool Hosting { get; set; }
+    public string Hosting { get; set; }
     public bool IsWin { get; set; }
 }
 

@@ -11,11 +11,11 @@ public class ClubsDTO
     public string ClubCode { get; set; }
     public string Name { get; set; }
     public string DomesticCompetitionId { get; set; }
-    public long TotalMarketValue { get; set; }
+    public string TotalMarketValue { get; set; }
     public int SquadSize { get; set; }
-    public double AverageAge { get; set; }
+    public double? AverageAge { get; set; }
     public int ForeignersNumber { get; set; }
-    public double ForeignersPercentage { get; set; }
+    public double? ForeignersPercentage { get; set; }
     public int NationalTeamPlayers { get; set; }
     public string StadiumName { get; set; }
     public int StadiumSeats { get; set; }

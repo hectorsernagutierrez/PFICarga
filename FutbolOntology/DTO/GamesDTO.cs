@@ -8,7 +8,7 @@ using System.IO;
 public class GamesDTO
 {
     public int GameId { get; set; }
-    public int CompetitionId { get; set; }
+    public string CompetitionId { get; set; }
     public string Season { get; set; }
     public string Round { get; set; }
     public DateTime Date { get; set; }
@@ -21,7 +21,7 @@ public class GamesDTO
     public string HomeClubManagerName { get; set; }
     public string AwayClubManagerName { get; set; }
     public string Stadium { get; set; }
-    public int Attendance { get; set; }
+    public int? Attendance { get; set; }
     public string Referee { get; set; }
     public string Url { get; set; }
     public string HomeClubFormation { get; set; }

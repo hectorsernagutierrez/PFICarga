@@ -14,8 +14,10 @@ public class TransfersDTO
     public int ToClubId { get; set; }
     public string FromClubName { get; set; }
     public string ToClubName { get; set; }
-    public long TransferFee { get; set; }
-    public long MarketValueInEur { get; set; }
+    public string TransferFeeString { get; set; }
+    public long? TransferFee { get; set; }
+    public string MarketValueInEurString { get; set; }
+    public long? MarketValueInEur { get; set; }
     public string PlayerName { get; set; }
 }
 
@@ -34,8 +36,8 @@ public sealed class TransfersDTOMap : ClassMap<TransfersDTO>
         Map(m => m.ToClubId).Name("to_club_id");
         Map(m => m.FromClubName).Name("from_club_name");
         Map(m => m.ToClubName).Name("to_club_name");
-        Map(m => m.TransferFee).Name("transfer_fee");
-        Map(m => m.MarketValueInEur).Name("market_value_in_eur");
+        Map(m => m.TransferFeeString).Name("transfer_fee");
+        Map(m => m.MarketValueInEurString).Name("market_value_in_eur");
         Map(m => m.PlayerName).Name("player_name");
     }
 }

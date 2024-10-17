@@ -37,12 +37,12 @@ class Program
 
         // Read and display Appearances
         var service = new DTOService();
-        //List<AppearancesDTO> appearances = service.ReadAppearances(appearancesFilePath);
-        //Console.WriteLine("=== Appearances ===");
-        //foreach (var appearance in appearances)
-        //{
-        //    Console.WriteLine($"Player ID: {appearance.PlayerId}, Game ID: {appearance.GameId}, Minutes Played: {appearance.MinutesPlayed}");
-        //}
+        List<AppearancesDTO> appearances = service.ReadAppearances(appearancesFilePath);
+        Console.WriteLine("=== Appearances ===");
+        foreach (var appearance in appearances)
+        {
+            Console.WriteLine($"Player ID: {appearance.PlayerId}, Game ID: {appearance.GameId}, Minutes Played: {appearance.MinutesPlayed}");
+        }
 
         // Read and display Club Games
         List<ClubGamesDTO> clubGames = service.ReadClubGames(clubGamesFilePath);

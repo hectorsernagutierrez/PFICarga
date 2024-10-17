@@ -7,7 +7,7 @@ using System.IO;
 using CsvHelper.Configuration;
 public class GameEventsDTO
 {
-    public int GameEventId { get; set; }
+    public string GameEventId { get; set; }
     public DateTime Date { get; set; }
     public int GameId { get; set; }
     public int Minute { get; set; }
