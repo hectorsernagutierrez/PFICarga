@@ -59,7 +59,7 @@ namespace FutbolOntology.CargaPFI
                 //sportsClub.Schema_foundingDate=club
                 //ClubpfihsOntology.PostalAddress
                 //sportsClub.Schema_award=
-                //
+                //sportsClub.Schema_alternateName
 
 
                 apiRecursos.ChangeOntology(ontologiaClub);

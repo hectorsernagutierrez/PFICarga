@@ -39,7 +39,7 @@ namespace FutbolOntology.CargaPFI
             this.apiRecursos = api;
         }
 
-        public void CargarTorneo(string rutaDirectorioCompetitions, string rutaDirectorioPartido, string rutaDirectorioEvento, string rutaDirectorioClub,string rutaDirectorioPersonaValoracion)
+        public void CargarTorneo(string rutaDirectorioCompetitions, string rutaDirectorioPartido, string rutaDirectorioEvento, string rutaDirectorioClub,string rutaDirectorioPersonaValoracion, string rutaDirectorioPersona,string rutaDirectorioValoracion)
         {
             var service = new DTOService();
             List<CompetitionsDTO> competitions = service.ReadCompetitions(rutaDirectorioCompetitions);
@@ -60,7 +60,7 @@ namespace FutbolOntology.CargaPFI
                 }
 
                 
-                tournament.Eschema_subEvent = CargarPartido(rutaDirectorioPartido, rutaDirectorioEvento,rutaDirectorioClub, rutaDirectorioPersonaValoracion, competition);
+                tournament.Eschema_subEvent = CargarPartido(rutaDirectorioPartido, rutaDirectorioEvento,rutaDirectorioClub, rutaDirectorioPersonaValoracion, rutaDirectorioPersona, rutaDirectorioValoracion, competition);
 
 
 
@@ -78,7 +78,7 @@ namespace FutbolOntology.CargaPFI
 
 
 
-        public  List<SportsEvent> CargarPartido(string rutaDirectorioPartido, string rutaDirectorioEvento, string rutaDirectorioClub,string rutaDirectorioPersonaValoracion, CompetitionsDTO competition)
+        public  List<SportsEvent> CargarPartido(string rutaDirectorioPartido, string rutaDirectorioEvento, string rutaDirectorioClub,string rutaDirectorioPersonaValoracion,string rutaDirectorioPersona, string rutaDirectorioValoracion,CompetitionsDTO competition)
         {
             var service = new DTOService();
             List<GamesDTO> games = service.ReadGames(rutaDirectorioPartido);
@@ -94,7 +94,7 @@ namespace FutbolOntology.CargaPFI
                     sportsEvent.Eschema_result = $"{game.HomeClubName} : {game.HomeClubGoals}  - {game.AwayClubGoals} : {game.AwayClubName}  ";
                    
                     //AwayTeam
-                    TorneopfihsOntology.SportsTeam away = IniciarTeams(rutaDirectorioClub, game.AwayClubId);
+                    TorneopfihsOntology.SportsTeam away = IniciarTeams(rutaDirectorioClub, rutaDirectorioPersona, rutaDirectorioValoracion,  game.AwayClubId);
                     away.IdsSchema_coach.Add(getManager(game.AwayClubManagerName));
                     away.Eschema_classification = int.TryParse(game.AwayClubPosition, out var result) ? result : (int?)null;
                     PersonLinedUp athlete ;
@@ -119,7 +119,7 @@ namespace FutbolOntology.CargaPFI
                     sportsEvent.Schema_awayTeam = away;
                     
                     //Home
-                    TorneopfihsOntology.SportsTeam home = IniciarTeams(rutaDirectorioClub, game.HomeClubId);
+                    TorneopfihsOntology.SportsTeam home = IniciarTeams(rutaDirectorioClub, rutaDirectorioPersona, rutaDirectorioValoracion, game.HomeClubId);
                     home.IdsSchema_coach.Add(getManager(game.HomeClubManagerName));
                     home.Eschema_classification = int.TryParse(game.HomeClubPosition, out var result2) ? result2 : (int?)null;
                     home.Schema_athlete = listAthletesHome;
@@ -141,7 +141,7 @@ namespace FutbolOntology.CargaPFI
         }
 
 
-        public TorneopfihsOntology.SportsTeam IniciarTeams(string rutaDirectorioClub, string id)
+        public TorneopfihsOntology.SportsTeam IniciarTeams(string rutaDirectorioClub, string rutaDirectorioPersona, string rutaDirectorioValoracion,string id)
         {
             
             SparqlObject resultado = null;
@@ -172,8 +172,8 @@ namespace FutbolOntology.CargaPFI
             else
             {
                 Club c = new Club(apiRecursos);
-                c.CargarTodosClub( rutaDirectorioClub);
-                IniciarTeams(rutaDirectorioClub,id);
+                c.CargarTodosClub( rutaDirectorioClub,rutaDirectorioPersona,rutaDirectorioValoracion);
+                IniciarTeams(rutaDirectorioClub, rutaDirectorioPersona, rutaDirectorioValoracion,id);
 
 
 
