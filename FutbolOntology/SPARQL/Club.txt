@@ -1,16 +1,29 @@
 ﻿SELECT ?club ?clubLabel ?alternativeName ?logo ?foundingDate ?award ?awardLabel ?stadium ?postalCode ?street ?city ?country
 WHERE {
   # Football club instance
-  ?club wdt:P31 wd:Q476028.
-  
-  # Filter by primary label or alternative name, limiting to Spanish and English
-  ?club rdfs:label ?clubLabel.
-  FILTER(LANG(?clubLabel) = "es" || LANG(?clubLabel) = "en").
-  
-  # Filter for 'Real Madrid' in club name or alternative name
-  OPTIONAL { ?club wdt:P1448 ?alternativeName. }
-  FILTER(CONTAINS(LCASE(?clubLabel), "real madrid cf") || CONTAINS(LCASE(?alternativeName), "real madrid")).
-  
+  {
+    # Instancia de club de fútbol
+    ?club wdt:P31 wd:Q476028;
+          rdfs:label ?clubLabel.
+    
+    FILTER(LANG(?clubLabel) = "es" || LANG(?clubLabel) = "en").
+    OPTIONAL { ?club wdt:P1448 ?alternativeName. }
+
+    # Filtrar por club específico ('FC Barcelona' o 'Barça')
+    FILTER(CONTAINS(LCASE(?clubLabel), "fc barcelona") || CONTAINS(LCASE(?alternativeName), "barça")).
+  }
+  UNION
+  {
+    # Instancia de club de fútbol masculino
+    ?club wdt:P31 wd:Q103229495;
+          rdfs:label ?clubLabel.
+
+    FILTER(LANG(?clubLabel) = "es" || LANG(?clubLabel) = "en").
+    OPTIONAL { ?club wdt:P1448 ?alternativeName. }
+
+    # Filtrar por club específico ('FC Barcelona' o 'Barça')
+    FILTER(CONTAINS(LCASE(?clubLabel), "fc barcelona") || CONTAINS(LCASE(?alternativeName), "barça")).
+  }
   # Optional logo URL
   OPTIONAL { ?club wdt:P154 ?logo. }
   
@@ -37,44 +50,4 @@ WHERE {
 }
 LIMIT 10
 
-
-------------------------------------------------
-
-SELECT  ?clubLabel ?headCoach ?headCoachLabel ?startTime
-WHERE {
-  {
-    # Instancia de club de fútbol
-    ?club wdt:P31 wd:Q476028;
-          rdfs:label ?clubLabel.
-    
-    FILTER(LANG(?clubLabel) = "es" || LANG(?clubLabel) = "en").
-    OPTIONAL { ?club wdt:P1448 ?alternativeName. }
-
-    # Filtrar por club específico ('FC Barcelona' o 'Barça')
-    FILTER(CONTAINS(LCASE(?clubLabel), "fc barcelona") || CONTAINS(LCASE(?alternativeName), "barça")).
-  }
-  UNION
-  {
-    # Instancia de club de fútbol masculino
-    ?club wdt:P31 wd:Q103229495;
-          rdfs:label ?clubLabel.
-
-    FILTER(LANG(?clubLabel) = "es" || LANG(?clubLabel) = "en").
-    OPTIONAL { ?club wdt:P1448 ?alternativeName. }
-
-    # Filtrar por club específico ('FC Barcelona' o 'Barça')
-    FILTER(CONTAINS(LCASE(?clubLabel), "fc barcelona") || CONTAINS(LCASE(?alternativeName), "barça")).
-  }
-
-  # Obtener el head coach (entrenador principal)
-  ?club wdt:P286 ?headCoach.
-  
-  # Fechas de inicio y fin del cargo del entrenador
-  OPTIONAL { ?headCoach wdt:P580 ?startTime. }
-  OPTIONAL { ?headCoach wdt:P582 ?endTime. }
-
-  # Limitar los resultados en español o inglés
-  SERVICE wikibase:label { bd:serviceParam wikibase:language "es,en". }
-}
-LIMIT 100
 
