@@ -1,4 +1,4 @@
-﻿SELECT ?club ?clubLabel ?alternativeName ?logo ?foundingDate ?award ?awardLabel ?stadium ?postalCode ?street ?city ?country
+﻿SELECT ?club ?clubLabel ?alternativeName ?logo ?foundingDate ?award ?awardLabel ?stadium ?postalCode ?street ?city ?country ?wikipediaArticle
 WHERE {
   # Football club instance
   {
@@ -44,7 +44,11 @@ WHERE {
     OPTIONAL { ?stadium wdt:P131 ?city. }        # City
     OPTIONAL { ?stadium wdt:P17 ?country. }      # Country
   }
-
+   # Obtener el artículo de Wikipedia en inglés
+  OPTIONAL {
+    ?wikipediaArticle schema:about ?club;
+                      schema:isPartOf <https://en.wikipedia.org/>.
+  }
   # Retrieve club, award, and stadium labels in Spanish and English
   SERVICE wikibase:label { bd:serviceParam wikibase:language "es,en". }
 }

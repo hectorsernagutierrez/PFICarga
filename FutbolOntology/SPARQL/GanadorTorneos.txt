@@ -1,0 +1,34 @@
+﻿SELECT ?club ?clubLabel ?competition ?competitionLabel ?TorneoLabel ?season
+WHERE {
+  {
+    # Buscar instancias de club de fútbol
+    ?club wdt:P31 wd:Q476028;  # Instancia de club de fútbol
+          rdfs:label ?clubLabel.
+    
+    # Filtro por nombre del club (por ejemplo 'FC Barcelona')
+    FILTER(CONTAINS(LCASE(?clubLabel), "fc barcelona")).
+    FILTER(LANG(?clubLabel) = "en").
+  }
+  UNION
+  {
+    # Buscar instancias de club de fútbol masculino
+    ?club wdt:P31 wd:Q103229495;  # Instancia de club de fútbol masculino
+          rdfs:label ?clubLabel.
+    
+    # Filtro por nombre del club (por ejemplo 'FC Barcelona')
+    FILTER(CONTAINS(LCASE(?clubLabel), "fc barcelona")).
+    FILTER(LANG(?clubLabel) = "en").
+  }
+
+  # Obtener competiciones ganadas (P166) y filtrar solo competiciones deportivas (Q3241044)
+  ?club wdt:P2522 ?competition.  # Premios o competiciones ganadas
+  ?competition wdt:P3450 ?Torneo
+  optional{
+    ?competition wdt:P585 ?season
+    
+    }
+  # Limitar los resultados en inglés
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+}
+ORDER BY ?competitionLabel
+
