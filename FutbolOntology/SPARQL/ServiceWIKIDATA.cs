@@ -80,55 +80,59 @@ namespace FutbolOntology.SPARQL
 
         public static async Task GetPlayerAsync( )
         {
-                // Crear el cliente HTTP
-                var client = new HttpClient();
+            //    // Crear el cliente HTTP
+            //    var client = new HttpClient();
 
 
 
-                // Crear la solicitud HTTP con la consulta SPARQL
-                var request = new HttpRequestMessage(HttpMethod.Get, "https://query.wikidata.org/sparql?query=SELECT ?player ?playerLabel ?wikipediaArticle ?award ?awardLabel WHERE { ?player wdt:P106 wd:Q937857; rdfs:label ?playerLabel. FILTER(CONTAINS(LCASE(?playerLabel), \"iniesta\")). FILTER(LANG(?playerLabel) = \"en\"). OPTIONAL { ?wikipediaArticle schema:about ?player; schema:isPartOf <https://en.wikipedia.org/>. } OPTIONAL { ?player wdt:P166 ?award. ?award rdfs:label ?awardLabel FILTER( LANG(?awardLabel) = \"en\"). } SERVICE wikibase:label { bd:serviceParam wikibase:language \"en\". } } LIMIT 10");
+            //    // Crear la solicitud HTTP con la consulta SPARQL
+            //    var request = new HttpRequestMessage(HttpMethod.Get, "https://query.wikidata.org/sparql?query=SELECT ?player ?playerLabel ?wikipediaArticle ?award ?awardLabel WHERE { ?player wdt:P106 wd:Q937857; rdfs:label ?playerLabel. FILTER(CONTAINS(LCASE(?playerLabel), \"iniesta\")). FILTER(LANG(?playerLabel) = \"en\"). OPTIONAL { ?wikipediaArticle schema:about ?player; schema:isPartOf <https://en.wikipedia.org/>. } OPTIONAL { ?player wdt:P166 ?award. ?award rdfs:label ?awardLabel FILTER( LANG(?awardLabel) = \"en\"). } SERVICE wikibase:label { bd:serviceParam wikibase:language \"en\". } } LIMIT 10");
 
 
 
-                // Configurar los encabezados para aceptar JSON
-                request.Headers.Add("Accept", "application/sparql-results+json");
+            //    // Configurar los encabezados para aceptar JSON
+            //    request.Headers.Add("Accept", "application/sparql-results+json");
 
 
 
-                // Enviar la solicitud
-                var response = await client.SendAsync(request);
-                response.EnsureSuccessStatusCode();  // Lanza excepción si el código no es exitoso
+            //    // Enviar la solicitud
+            //    var response = await client.SendAsync(request);
+            //    response.EnsureSuccessStatusCode();  // Lanza excepción si el código no es exitoso
 
 
 
-                // Leer el contenido de la respuesta como cadena
-                var jsonString = await response.Content.ReadAsStringAsync();
+            //    // Leer el contenido de la respuesta como cadena
+            //    var jsonString = await response.Content.ReadAsStringAsync();
 
 
 
-                // Deserializar el JSON
-                var jsonDoc = JsonDocument.Parse(jsonString);
+            //    // Deserializar el JSON
+            //    var jsonDoc = JsonDocument.Parse(jsonString);
 
 
 
-                // Acceder a los resultados dentro del JSON
-                var results = jsonDoc.RootElement.GetProperty("results").GetProperty("bindings");
+            //    // Acceder a los resultados dentro del JSON
+            //    var results = jsonDoc.RootElement.GetProperty("results").GetProperty("bindings");
 
 
 
-                // Recorrer los resultados y extraer los campos necesarios
-                foreach (var result in results.EnumerateArray())
-                {
-                    var playerLabel = result.GetProperty("playerLabel").GetProperty("value").GetString();
-                    string wikipediaArticle = result.TryGetProperty("wikipediaArticle", out var wikipediaProp) ? wikipediaProp.GetProperty("value").GetString() : "No Wikipedia article";
-                    string awardLabel = result.TryGetProperty("awardLabel", out var awardProp)? awardProp.GetProperty("value").GetString() : "No Award";
-                    Console.WriteLine($"Player: {playerLabel}");
-                    Console.WriteLine($"Wikipedia Article: {wikipediaArticle}");
-                    Console.WriteLine($"Award: {awardLabel}");
-                    Console.WriteLine("----------------------");
+            //    // Recorrer los resultados y extraer los campos necesarios
+            //    foreach (var result in results.EnumerateArray())
+            //    {
+            //        var playerLabel = result.GetProperty("playerLabel").GetProperty("value").GetString();
+            //        string wikipediaArticle = result.TryGetProperty("wikipediaArticle", out var wikipediaProp) ? wikipediaProp.GetProperty("value").GetString() : "No Wikipedia article";
+            //        string awardLabel = result.TryGetProperty("awardLabel", out var awardProp)? awardProp.GetProperty("value").GetString() : "No Award";
+            //        Console.WriteLine($"Player: {playerLabel}");
+            //        Console.WriteLine($"Wikipedia Article: {wikipediaArticle}");
+            //        Console.WriteLine($"Award: {awardLabel}");
+            //        Console.WriteLine("----------------------");
                 
-            }
+            //}
         
+
+
+
+
 
     }
 
