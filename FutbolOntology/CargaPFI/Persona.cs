@@ -70,7 +70,7 @@ namespace FutbolOntology.CargaPFI
                 }
 
             }
-
+            //HACER:
             //Consultas
             //persona.Schema_description=player.
             //persona.Schema_award=player.
