@@ -30,7 +30,7 @@ namespace FutbolOntology.SPARQL
             webClient.Headers.Add("accept", "application/sparql-results+json");
 
 
-            string nombreConsulta = "bahrain international circuit".ToLower();
+           
 
             // Definir la consulta SPARQL
             String select2 = $@"SELECT ?player ?playerLabel ?wikipediaArticle ?award ?awardLabel";
@@ -57,9 +57,7 @@ namespace FutbolOntology.SPARQL
 
             String sparqlQuery = select2 + where2;
 
-            System.Collections.Specialized.NameValueCollection parametros = new
-                System.Collections.Specialized.NameValueCollection
-            {
+            System.Collections.Specialized.NameValueCollection parametros = new     System.Collections.Specialized.NameValueCollection {
                 { "query", sparqlQuery.ToString() }
             };
             byte[] responseArray = null;
