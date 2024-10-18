@@ -8,13 +8,14 @@ using System.Collections.Generic;
 
 class Program
 {
-    static async Task Main(string[] args)
+    static void Main(string[] args)
     {
         // Paths to CSV files (update paths if needed)
 
         Console.WriteLine("=== async ===");
 
-        await ServiceWIKIDATA.GetPlayerAsync();
+        ServiceWIKIDATA.Jasonget("iniesta");
+
         string appearancesFile = @"Dataset/appearances.csv";
         string clubGamesFile = @"Dataset/club_games.csv";
         string clubsFile = @"Dataset/clubs.csv";
