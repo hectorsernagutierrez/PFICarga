@@ -1,5 +1,7 @@
 
 using FutbolOntology.DTO;
+using FutbolOntology.SPARQL;
+using Gnoss.ApiWrapper.ApiModel;
 using System;
 using System.Collections.Generic;
 
@@ -9,8 +11,10 @@ class Program
     static void Main(string[] args)
     {
         // Paths to CSV files (update paths if needed)
-       
-        
+
+        Console.WriteLine("=== async ===");
+
+       // Task t= ServiceWIKIDATA.GetPlayerAsync();
         string appearancesFile = @"Dataset/appearances.csv";
         string clubGamesFile = @"Dataset/club_games.csv";
         string clubsFile = @"Dataset/clubs.csv";
@@ -32,6 +36,9 @@ class Program
         string playerValuationsFilePath = Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase, playerValuationsFile);
         string playersFilePath = Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase, playersFile);
         string transfersFilePath = Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase, transfersFile);
+
+       
+
 
  var service = new DTOService();
 

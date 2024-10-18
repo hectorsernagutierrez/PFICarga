@@ -8,16 +8,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="SPARQL\JugadorDescripciónPremios.txt" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Include="SPARQL\JugadorDescripciónPremios.txt" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="CsvHelper" Version="33.0.1" />
     <PackageReference Include="GnossApiWrapper.NetCore" Version="6.2.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 
   <ItemGroup>
