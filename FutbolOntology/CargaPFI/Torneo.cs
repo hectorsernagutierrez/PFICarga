@@ -16,6 +16,7 @@ using PersonapfihsOntology;
 using SixLabors.ImageSharp;
 using System.Security.Policy;
 using System.Numerics;
+using FutbolOntology.SPARQL;
 
 namespace FutbolOntology.CargaPFI
 {
@@ -46,16 +47,25 @@ namespace FutbolOntology.CargaPFI
             foreach (var competition in competitions)
             {
                 SportsTournament tournament = new SportsTournament();
-                tournament.Schema_name = competition.Name;
+                tournament.Schema_name = competition.Name.Replace("-"," ").Trim();
                 tournament.Schema_identifier = competition.CompetitionId;
+                tournament.Schema_description = competition.Url;
 
                 //HACER: CAMPEON CONSULTA
 
-                if (!string.IsNullOrEmpty(competition.Confederation))
+
+                
+                if (!string.IsNullOrEmpty(competition.DomesticLeagueCode))
                 {
 
-                    string uri = getOrganizerURl(competition.Confederation);    
+                    string uri = getOrganizerURl(competition.DomesticLeagueCode);    
                    
+                    tournament.IdsSchema_organizer.Add(uri);
+                }
+                else
+                {
+                    string uri = getOrganizerURl("UEFA");
+
                     tournament.IdsSchema_organizer.Add(uri);
                 }
 
@@ -199,7 +209,7 @@ namespace FutbolOntology.CargaPFI
             where += $@"?s ?p ?o.";
             where += $@"FILTER(?o LIKE '{name}')";
             //where += $@"FILTER(REGEX(?o, '{nombre}', 'i'))";
-            where += $@"}}";
+            where += $@"}} LIMIT 1";
             try
             {
                 resultado = apiRecursos.VirtuosoQuery(select, where, ontologiaPersona);
@@ -222,8 +232,44 @@ namespace FutbolOntology.CargaPFI
                 person.Schema_name = name;
 
                 //Consulta a DBPEDIA datos
+                // Inicialización de las variables con valores por defecto
+                string entrenadorLabel = "N/A";                           // Si no se encuentra el nombre, se asigna "N/A"
+                DateTime? fechaNacimiento = null;                        // Si no se encuentra la fecha, se deja null
+                string imagenUrl = "https://example.com/default-image";   // Si no hay imagen, se usa una URL por defecto
+                List<string> premios = new List<string>();               // Si no hay premios, una lista vacía
+                string ciudadNacimiento = "Desconocida";                 // Si no se encuentra la ciudad, se asigna "Desconocida"
+                string paisNacimiento = "Desconocido";                   // Si no se encuentra el país, se asigna "Desconocido"
+                string nacionalidad = "Desconocida";                     // Si no se encuentra la nacionalidad, se asigna "Desconocida"
+                int altura = 0;                                   // Si no hay altura, se deja null
+
+                // Llamada al método que controla las salidas nulas
+                ServiceWIKIDATA.ObtenerDatosEntrenador(
+                  name  ,
+                    out entrenadorLabel,
+                    out fechaNacimiento,
+                    out imagenUrl,
+                    out premios,
+                    out ciudadNacimiento,
+                    out paisNacimiento,
+                    out nacionalidad,
+                    out altura
+                );
+
+                person.tagList = premios;
+                person.tagList.Add(name);
+                person.Schema_award = premios;
+                person.Schema_birthDate = fechaNacimiento;
+                person.Schema_image =new List<string> { imagenUrl };
+                PersonapfihsOntology.PostalAddress pad = new PersonapfihsOntology.PostalAddress();
+                pad.Schema_addressLocality = ciudadNacimiento;
+                pad.Schema_addressCountry = paisNacimiento;
+                person.Schema_birthPlace = pad;
+                person.Schema_height =altura;
+                
 
 
+
+                
 
                 apiRecursos.ChangeOntology(ontologiaPersona);
                 ComplexOntologyResource recursoPersona = person.ToGnossApiResource(apiRecursos, new List<string> { "Coach" }, Guid.NewGuid(), Guid.NewGuid());
@@ -240,7 +286,7 @@ namespace FutbolOntology.CargaPFI
         }
 
 
-        public string getPlayerUrl(string name,string rutaDirectorioPersonaValoracion)
+        public string getPlayerUrl(string id,string name,string rutaDirectorioPersonaValoracion)
         {
 
             SparqlObject resultado = null;
@@ -249,9 +295,9 @@ namespace FutbolOntology.CargaPFI
             select += $@"SELECT *";
             where += $@" WHERE {{ ";
             where += $@"?s ?p ?o.";
-            where += $@"FILTER(?o LIKE '{name}')";
+            where += $@"FILTER(?o LIKE '{id}')";
             //where += $@"FILTER(REGEX(?o, '{nombre}', 'i'))";
-            where += $@"}}";
+            where += $@"}}LIMIT 1";
             try
             {
                 resultado = apiRecursos.VirtuosoQuery(select, where, ontologiaPersona);
@@ -270,16 +316,18 @@ namespace FutbolOntology.CargaPFI
             }
             else
             {
-                List<PlayersDTO> players = new List<PlayersDTO>();
+//                List<PlayersDTO> players = new List<PlayersDTO>();
                 
-                Dictionary<string, PlayersDTO> pares = players.GroupBy(player => player.Name).ToDictionary(group => group.Key, group => group.First());
-                PlayersDTO p = pares[name];
-                
-                
-                DTOService service = new DTOService();
-                List < PlayerValuationsDTO > playerValuations = service.ReadPlayerValuations(rutaDirectorioPersonaValoracion);
-                Persona person1 = new Persona(apiRecursos);
-                 uri = person1.CargarPersonaSola(p, playerValuations);
+//                Dictionary<string, PlayersDTO> pares = players.GroupBy(player => player.Name).ToDictionary(group => group.Key, group => group.First());
+               
+//                PlayersDTO p = (pares != null && pares.ContainsKey(name)) ? pares[name] : new PlayersDTO { Name = name };
+//;
+
+
+//                DTOService service = new DTOService();
+//                List < PlayerValuationsDTO > playerValuations = service.ReadPlayerValuations(rutaDirectorioPersonaValoracion);
+//                Persona person1 = new Persona(apiRecursos);
+//                 uri = person1.CargarPersonaSola(p, playerValuations,null,null);
 
             }
 
@@ -404,7 +452,7 @@ namespace FutbolOntology.CargaPFI
         public PersonLinedUp getPlayerAlineado(GameLineupsDTO player, string rutaDirectorioPersonaValoracion)
         {
             PersonLinedUp person = new PersonLinedUp();
-            person.IdEschema_player = getPlayerUrl(player.PlayerName, rutaDirectorioPersonaValoracion);            
+            person.IdEschema_player = getPlayerUrl(player.PlayerId  ,player.PlayerName, rutaDirectorioPersonaValoracion);            
             person.Eschema_bibNumber = int.TryParse(player.NumberString, out var result) ? result : 0;
             person.IdEschema_type = getTipoUrl(player.Type);
             person.IdEschema_position= getTipoUrl(player.Position); 
