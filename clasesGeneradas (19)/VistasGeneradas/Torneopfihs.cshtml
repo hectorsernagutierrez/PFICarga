@@ -1,0 +1,337 @@
+@using TorneopfihsOntology;
+@using ClubpfihsOntology;
+@using OrganizacionpfihsOntology;
+@using TipopfihsOntology;
+@using PersonapfihsOntology;
+@using ClubpfihsOntology;
+@using TipopfihsOntology;
+@using PersonapfihsOntology;
+@using PosicionpfihsOntology;
+@using GnossBase;
+@model ResourceViewModel
+@{
+	ResourceModel FichaDocumento = Model.Resource;
+	CommunityModel Comunidad = Html.GetComunidad();
+	UserIdentityModel IdentidadActual = Html.GetIdentidadActual();
+	Html.AddBodyClass(" SportsTournamentModel ");
+	if (FichaDocumento.ItemLinkedFotoVersion != 0 && !string.IsNullOrEmpty(FichaDocumento.ItemLinked.ToString()) && FichaDocumento.ItemLinked != Guid.Empty)
+	{
+	string urlPersonalizacion = $"{Html.GetBaseUrlContent()}/{Es.Riam.Util.UtilArchivos.ContentOntologias}/Archivos/{FichaDocumento.ItemLinked.ToString().Substring(0, 3)}";
+	Html.GetListaJS().Add($"{urlPersonalizacion}/{FichaDocumento.ItemLinked.ToString()}.js?v= {FichaDocumento.ItemLinkedFotoVersion}");
+	Html.GetListaCSS().Add($"{urlPersonalizacion}/{FichaDocumento.ItemLinked.ToString()}.css?v= {FichaDocumento.ItemLinkedFotoVersion}");
+	}
+	SemanticResourceModel semCmsModel = Model.SemanticFrom;
+	 GnossOCBase.LanguageEnum idiomaUsuario = (GnossOCBase.LanguageEnum)Enum.Parse(typeof(GnossOCBase.LanguageEnum), Html.GetUtilIdiomas().LanguageCode.ToLower());
+	SportsTournament pSportsTournament = new SportsTournament(semCmsModel,idiomaUsuario);
+}
+<div class="row">
+<div class="col01 col col-12 col-lg-9">
+<div typeof="https://schema.org/extended/SportsTournament:sportstournament">
+<div class="contentGroup contenidoPrincipal">
+<div class="group title">
+</div>
+</div>
+<div class="group content semanticView">
+<div class="group group_info">
+<div class="contentGroup">
+@if(!string.IsNullOrEmpty(pSportsTournament.Schema_name))
+{
+<div>
+		<strong>@pSportsTournament.GetLabel(nameof(pSportsTournament.Schema_name),idiomaUsuario)</strong>
+<span class="values">
+		<p property="@pSportsTournament.GetPropertyURI(nameof(pSportsTournament.Schema_name))"> @pSportsTournament.Schema_name[(int)idiomaUsuario] </p>
+</span>
+</div>
+}
+@if(pSportsTournament.Schema_organizer!=null)
+{
+<div>
+	@foreach(Organization prop in pSportsTournament.Schema_organizer)
+	{
+		PintarOrganization(prop,idiomaUsuario);
+	}
+</div>
+}
+@if(!string.IsNullOrEmpty(pSportsTournament.Schema_description))
+{
+<div>
+		<strong>@pSportsTournament.GetLabel(nameof(pSportsTournament.Schema_description),idiomaUsuario)</strong>
+<span class="values">
+		<p property="@pSportsTournament.GetPropertyURI(nameof(pSportsTournament.Schema_description))"> @pSportsTournament.Schema_description[(int)idiomaUsuario] </p>
+</span>
+</div>
+}
+@if(pSportsTournament.Eschema_winner!=null)
+{
+<div>
+	PintarSportsClub(pSportsTournament.Eschema_winner,idiomaUsuario);
+</div>
+}
+@if(pSportsTournament.Eschema_subEvent!=null)
+{
+<div>
+	@foreach(SportsEvent prop in pSportsTournament.Eschema_subEvent)
+	{
+		PintarSportsEvent(prop,idiomaUsuario);
+	}
+</div>
+}
+</div>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+
+@functions
+{
+ void PintarEvent(Event pEvent,GnossOCBase.LanguageEnum idiomaUsuario, Observation pObservation){
+<div typeof="https://schema.org/Event:event">
+<div class="contentGroup contenidoPrincipal">
+<div class="group title">
+</div>
+</div>
+<div class="group content semanticView">
+<div class="group group_info">
+<div class="contentGroup">
+@if(pEvent.Schema_about!=null)
+{
+<div>
+	PintarThing(pEvent.Schema_about,idiomaUsuario);
+</div>
+}
+@if(pEvent.Schema_actor!=null)
+{
+<div>
+	PintarPersonLinedUp(pEvent.Schema_actor,idiomaUsuario);
+</div>
+}
+@if(pEvent.Eschema_Minute!=null)
+{
+<div>
+		<strong>@pEvent.GetLabel(nameof(pEvent.Eschema_Minute),idiomaUsuario)</strong>
+<span class="values">
+		<p property="@pEvent.GetPropertyURI(nameof(pEvent.Eschema_Minute))"> @pEvent.Eschema_Minute </p>
+</span>
+</div>
+}
+</div>
+</div>
+</div>
+
+</div>
+
+}
+ void PintarSportsTeam(SportsTeam pSportsTeam,GnossOCBase.LanguageEnum idiomaUsuario, Observation pObservation){
+<div typeof="https://schema.org/SportsTeam:sportsteam">
+<div class="contentGroup contenidoPrincipal">
+<div class="group title">
+</div>
+</div>
+<div class="group content semanticView">
+<div class="group group_info">
+<div class="contentGroup">
+@if(pSportsTeam.Schema_subOrganization!=null)
+{
+<div>
+	PintarSportsClub(pSportsTeam.Schema_subOrganization,idiomaUsuario);
+</div>
+}
+@if(pSportsTeam.Schema_coach!=null)
+{
+<div>
+	@foreach(Person prop in pSportsTeam.Schema_coach)
+	{
+		PintarPerson(prop,idiomaUsuario);
+	}
+</div>
+}
+@if(pSportsTeam.Schema_athlete!=null)
+{
+<div>
+	@foreach(PersonLinedUp prop in pSportsTeam.Schema_athlete)
+	{
+		PintarPersonLinedUp(prop,idiomaUsuario);
+	}
+</div>
+}
+@if(pSportsTeam.Eschema_classification!=null)
+{
+<div>
+		<strong>@pSportsTeam.GetLabel(nameof(pSportsTeam.Eschema_classification),idiomaUsuario)</strong>
+<span class="values">
+		<p property="@pSportsTeam.GetPropertyURI(nameof(pSportsTeam.Eschema_classification))"> @pSportsTeam.Eschema_classification </p>
+</span>
+</div>
+}
+</div>
+</div>
+</div>
+
+</div>
+
+}
+ void PintarPersonLinedUp(PersonLinedUp pPersonLinedUp,GnossOCBase.LanguageEnum idiomaUsuario, Observation pObservation){
+<div typeof="https://schema.org/extended/PersonLinedUp:personlinedup">
+<div class="contentGroup contenidoPrincipal">
+<div class="group title">
+</div>
+</div>
+<div class="group content semanticView">
+<div class="group group_info">
+<div class="contentGroup">
+@if(pPersonLinedUp.Eschema_type!=null)
+{
+<div>
+	PintarThing(pPersonLinedUp.Eschema_type,idiomaUsuario);
+</div>
+}
+@if(pPersonLinedUp.Eschema_player!=null)
+{
+<div>
+	PintarPerson(pPersonLinedUp.Eschema_player,idiomaUsuario);
+</div>
+}
+@if(pPersonLinedUp.Eschema_position!=null)
+{
+<div>
+	PintarPosition(pPersonLinedUp.Eschema_position,idiomaUsuario);
+</div>
+}
+@if(pPersonLinedUp.Eschema_bibNumber!=null)
+{
+<div>
+		<strong>@pPersonLinedUp.GetLabel(nameof(pPersonLinedUp.Eschema_bibNumber),idiomaUsuario)</strong>
+<span class="values">
+		<p property="@pPersonLinedUp.GetPropertyURI(nameof(pPersonLinedUp.Eschema_bibNumber))"> @pPersonLinedUp.Eschema_bibNumber </p>
+</span>
+</div>
+}
+</div>
+</div>
+</div>
+
+</div>
+
+}
+ void PintarSportsEvent(SportsEvent pSportsEvent,GnossOCBase.LanguageEnum idiomaUsuario, Observation pObservation){
+<div typeof="https://schema.org/SportsEvent:sportsevent">
+<div class="contentGroup contenidoPrincipal">
+<div class="group title">
+</div>
+</div>
+<div class="group content semanticView">
+<div class="group group_info">
+<div class="contentGroup">
+@if(pSportsEvent.Schema_awayTeam!=null)
+{
+<div>
+	PintarSportsTeam(pSportsEvent.Schema_awayTeam,idiomaUsuario);
+</div>
+}
+@if(pSportsEvent.Schema_homeTeam!=null)
+{
+<div>
+	PintarSportsTeam(pSportsEvent.Schema_homeTeam,idiomaUsuario);
+</div>
+}
+@if(!string.IsNullOrEmpty(pSportsEvent.Eschema_result))
+{
+<div>
+		<strong>@pSportsEvent.GetLabel(nameof(pSportsEvent.Eschema_result),idiomaUsuario)</strong>
+<span class="values">
+		<p property="@pSportsEvent.GetPropertyURI(nameof(pSportsEvent.Eschema_result))"> @pSportsEvent.Eschema_result[(int)idiomaUsuario] </p>
+</span>
+</div>
+}
+@if(pSportsEvent.Schema_subEvent!=null)
+{
+<div>
+	@foreach(Event prop in pSportsEvent.Schema_subEvent)
+	{
+		PintarEvent(prop,idiomaUsuario);
+	}
+</div>
+}
+</div>
+</div>
+</div>
+
+</div>
+
+}
+}
+@functions
+{
+void PintarOrganization(Organization pOrganization, GnossOCBase.LanguageEnum idiomaUsuario) {
+
+if(pOrganization.Schema_name!=null)
+{
+<div>
+		<strong>@pOrganization.GetLabel(nameof(pOrganization.Schema_name),idiomaUsuario)</strong>
+<span>
+<p property ="@pOrganization.GetPropertyURI(nameof(pOrganization.Schema_name))"> @pOrganization.Schema_name </p>
+</span>
+</div>
+}
+}
+void PintarSportsClub(SportsClub pSportsClub, GnossOCBase.LanguageEnum idiomaUsuario) {
+
+if(pSportsClub.Schema_name!=null)
+{
+<div>
+		<strong>@pSportsClub.GetLabel(nameof(pSportsClub.Schema_name),idiomaUsuario)</strong>
+<span>
+<p property ="@pSportsClub.GetPropertyURI(nameof(pSportsClub.Schema_name))"> @pSportsClub.Schema_name </p>
+</span>
+</div>
+}
+if(pSportsClub.Schema_logo!=null)
+{
+<div>
+		<strong>@pSportsClub.GetLabel(nameof(pSportsClub.Schema_logo),idiomaUsuario)</strong>
+<span>
+<p property ="@pSportsClub.GetPropertyURI(nameof(pSportsClub.Schema_logo))"> @pSportsClub.Schema_logo </p>
+</span>
+</div>
+}
+}
+void PintarThing(Thing pThing, GnossOCBase.LanguageEnum idiomaUsuario) {
+
+if(pThing.Schema_name!=null)
+{
+<div>
+		<strong>@pThing.GetLabel(nameof(pThing.Schema_name),idiomaUsuario)</strong>
+<span>
+<p property ="@pThing.GetPropertyURI(nameof(pThing.Schema_name))"> @pThing.Schema_name </p>
+</span>
+</div>
+}
+}
+void PintarPerson(Person pPerson, GnossOCBase.LanguageEnum idiomaUsuario) {
+
+if(pPerson.Schema_name!=null)
+{
+<div>
+		<strong>@pPerson.GetLabel(nameof(pPerson.Schema_name),idiomaUsuario)</strong>
+<span>
+<p property ="@pPerson.GetPropertyURI(nameof(pPerson.Schema_name))"> @pPerson.Schema_name </p>
+</span>
+</div>
+}
+}
+void PintarPosition(Position pPosition, GnossOCBase.LanguageEnum idiomaUsuario) {
+
+if(pPosition.Schema_name!=null)
+{
+<div>
+		<strong>@pPosition.GetLabel(nameof(pPosition.Schema_name),idiomaUsuario)</strong>
+<span>
+<p property ="@pPosition.GetPropertyURI(nameof(pPosition.Schema_name))"> @pPosition.Schema_name </p>
+</span>
+</div>
+}
+}
+}
+}

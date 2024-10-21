@@ -1,0 +1,258 @@
+@using PersonapfihsOntology;
+@using TaxonomypfihsOntology;
+@using ClubpfihsOntology;
+@using GnossBase;
+@model ResourceViewModel
+@{
+	ResourceModel FichaDocumento = Model.Resource;
+	CommunityModel Comunidad = Html.GetComunidad();
+	UserIdentityModel IdentidadActual = Html.GetIdentidadActual();
+	Html.AddBodyClass(" PersonModel ");
+	if (FichaDocumento.ItemLinkedFotoVersion != 0 && !string.IsNullOrEmpty(FichaDocumento.ItemLinked.ToString()) && FichaDocumento.ItemLinked != Guid.Empty)
+	{
+	string urlPersonalizacion = $"{Html.GetBaseUrlContent()}/{Es.Riam.Util.UtilArchivos.ContentOntologias}/Archivos/{FichaDocumento.ItemLinked.ToString().Substring(0, 3)}";
+	Html.GetListaJS().Add($"{urlPersonalizacion}/{FichaDocumento.ItemLinked.ToString()}.js?v= {FichaDocumento.ItemLinkedFotoVersion}");
+	Html.GetListaCSS().Add($"{urlPersonalizacion}/{FichaDocumento.ItemLinked.ToString()}.css?v= {FichaDocumento.ItemLinkedFotoVersion}");
+	}
+	SemanticResourceModel semCmsModel = Model.SemanticFrom;
+	 GnossOCBase.LanguageEnum idiomaUsuario = (GnossOCBase.LanguageEnum)Enum.Parse(typeof(GnossOCBase.LanguageEnum), Html.GetUtilIdiomas().LanguageCode.ToLower());
+	Person pPerson = new Person(semCmsModel,idiomaUsuario);
+}
+<div class="row">
+<div class="col01 col col-12 col-lg-9">
+<div typeof="https://schema.org/Person:person">
+<div class="contentGroup contenidoPrincipal">
+<div class="group title">
+</div>
+</div>
+<div class="group content semanticView">
+<div class="group group_info">
+<div class="contentGroup">
+<div>
+		<strong>@pPerson.GetLabel(nameof(pPerson.Schema_name),idiomaUsuario)</strong>
+<span class="values">
+		<p property="@pPerson.GetPropertyURI(nameof(pPerson.Schema_name))"> @pPerson.Schema_name[(int)idiomaUsuario] </p>
+</span>
+</div>
+@if(pPerson.Schema_image!=null)
+{
+<div>
+		<strong>@pPerson.GetLabel(nameof(pPerson.Schema_image),idiomaUsuario)</strong>
+<span class="values">
+		@foreach(string prop in pPerson.Schema_image)
+		{
+			
+		}
+</span>
+</div>
+}
+@if(pPerson.Eschema_i_club!=null)
+{
+<div>
+	@foreach(SportsClub prop in pPerson.Eschema_i_club)
+	{
+		PintarSportsClub(prop,idiomaUsuario);
+	}
+</div>
+}
+@if(pPerson.Schema_nationality!=null)
+{
+<div>
+	@foreach(NationalityPath prop in pPerson.Schema_nationality)
+	{
+		PintarNationalityPath(prop,idiomaUsuario);
+	}
+</div>
+}
+@if(pPerson.Schema_birthPlace!=null)
+{
+<div>
+	PintarPostalAddress(pPerson.Schema_birthPlace,idiomaUsuario);
+</div>
+}
+@if(pPerson.Schema_award!=null)
+{
+<div>
+		<strong>@pPerson.GetLabel(nameof(pPerson.Schema_award),idiomaUsuario)</strong>
+<span class="values">
+		@foreach(string prop in pPerson.Schema_award)
+		{
+			<p property="@pPerson.GetPropertyURI(nameof(pPerson.Schema_award))"> @prop </p>
+		}
+</span>
+</div>
+}
+@if(pPerson.Schema_height!=null)
+{
+<div>
+		<strong>@pPerson.GetLabel(nameof(pPerson.Schema_height),idiomaUsuario)</strong>
+<span class="values">
+		<p property="@pPerson.GetPropertyURI(nameof(pPerson.Schema_height))"> @pPerson.Schema_height </p>
+</span>
+</div>
+}
+@if(!string.IsNullOrEmpty(pPerson.Eschema_foot))
+{
+<div>
+		<strong>@pPerson.GetLabel(nameof(pPerson.Eschema_foot),idiomaUsuario)</strong>
+<span class="values">
+		<p property="@pPerson.GetPropertyURI(nameof(pPerson.Eschema_foot))"> @pPerson.Eschema_foot[(int)idiomaUsuario] </p>
+</span>
+</div>
+}
+@if(!string.IsNullOrEmpty(pPerson.Schema_description))
+{
+<div>
+		<strong>@pPerson.GetLabel(nameof(pPerson.Schema_description),idiomaUsuario)</strong>
+<span class="values">
+		<p property="@pPerson.GetPropertyURI(nameof(pPerson.Schema_description))"> @pPerson.Schema_description[(int)idiomaUsuario] </p>
+</span>
+</div>
+}
+@if(pPerson.Schema_birthDate!=null)
+{
+<div>
+		<strong>@pPerson.GetLabel(nameof(pPerson.Schema_birthDate),idiomaUsuario)</strong>
+<span class="values">
+		<p property="@pPerson.GetPropertyURI(nameof(pPerson.Schema_birthDate))"> @pPerson.Schema_birthDate </p>
+</span>
+</div>
+}
+@if(pPerson.Schema_networth!=null)
+{
+<div>
+	@foreach(PriceSpecification prop in pPerson.Schema_networth)
+	{
+		PintarPriceSpecification(prop,idiomaUsuario);
+	}
+</div>
+}
+</div>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+
+@functions
+{
+ void PintarPriceSpecification(PriceSpecification pPriceSpecification,GnossOCBase.LanguageEnum idiomaUsuario, Observation pObservation){
+<div typeof="https://schema.org/PriceSpecification:pricespecification">
+<div class="contentGroup contenidoPrincipal">
+<div class="group title">
+</div>
+</div>
+<div class="group content semanticView">
+<div class="group group_info">
+<div class="contentGroup">
+@if(pPriceSpecification.Schema_validFrom!=null)
+{
+<div>
+		<strong>@pPriceSpecification.GetLabel(nameof(pPriceSpecification.Schema_validFrom),idiomaUsuario)</strong>
+<span class="values">
+		<p property="@pPriceSpecification.GetPropertyURI(nameof(pPriceSpecification.Schema_validFrom))"> @pPriceSpecification.Schema_validFrom </p>
+</span>
+</div>
+}
+@if(pPriceSpecification.Schema_price!=null)
+{
+<div>
+		<strong>@pPriceSpecification.GetLabel(nameof(pPriceSpecification.Schema_price),idiomaUsuario)</strong>
+<span class="values">
+		<p property="@pPriceSpecification.GetPropertyURI(nameof(pPriceSpecification.Schema_price))"> @pPriceSpecification.Schema_price </p>
+</span>
+</div>
+}
+</div>
+</div>
+</div>
+
+</div>
+
+}
+ void PintarPostalAddress(PostalAddress pPostalAddress,GnossOCBase.LanguageEnum idiomaUsuario, Observation pObservation){
+<div typeof="https://schema.org/PostalAddress:postaladdress">
+<div class="contentGroup contenidoPrincipal">
+<div class="group title">
+</div>
+</div>
+<div class="group content semanticView">
+<div class="group group_info">
+<div class="contentGroup">
+@if(!string.IsNullOrEmpty(pPostalAddress.Schema_addressLocality))
+{
+<div>
+		<strong>@pPostalAddress.GetLabel(nameof(pPostalAddress.Schema_addressLocality),idiomaUsuario)</strong>
+<span class="values">
+		<p property="@pPostalAddress.GetPropertyURI(nameof(pPostalAddress.Schema_addressLocality))"> @pPostalAddress.Schema_addressLocality[(int)idiomaUsuario] </p>
+</span>
+</div>
+}
+<div>
+		<strong>@pPostalAddress.GetLabel(nameof(pPostalAddress.Schema_addressCountry),idiomaUsuario)</strong>
+<span class="values">
+		<p property="@pPostalAddress.GetPropertyURI(nameof(pPostalAddress.Schema_addressCountry))"> @pPostalAddress.Schema_addressCountry[(int)idiomaUsuario] </p>
+</span>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+
+}
+ void PintarNationalityPath(NationalityPath pNationalityPath,GnossOCBase.LanguageEnum idiomaUsuario, Observation pObservation){
+<div typeof="http://gnossg.gnoss.com/NationalityPath:nationalitypath">
+<div class="contentGroup contenidoPrincipal">
+<div class="group title">
+</div>
+</div>
+<div class="group content semanticView">
+<div class="group group_info">
+<div class="contentGroup">
+@if(pNationalityPath.Gnossg_countryBirthNode!=null)
+{
+<div>
+	@foreach(Concept prop in pNationalityPath.Gnossg_countryBirthNode)
+	{
+		PintarConcept(prop,idiomaUsuario);
+	}
+</div>
+}
+</div>
+</div>
+</div>
+
+</div>
+
+}
+}
+@functions
+{
+void PintarSportsClub(SportsClub pSportsClub, GnossOCBase.LanguageEnum idiomaUsuario) {
+
+if(pSportsClub.Schema_name!=null)
+{
+<div>
+		<strong>@pSportsClub.GetLabel(nameof(pSportsClub.Schema_name),idiomaUsuario)</strong>
+<span>
+<p property ="@pSportsClub.GetPropertyURI(nameof(pSportsClub.Schema_name))"> @pSportsClub.Schema_name </p>
+</span>
+</div>
+}
+if(pSportsClub.Schema_logo!=null)
+{
+<div>
+		<strong>@pSportsClub.GetLabel(nameof(pSportsClub.Schema_logo),idiomaUsuario)</strong>
+<span>
+<p property ="@pSportsClub.GetPropertyURI(nameof(pSportsClub.Schema_logo))"> @pSportsClub.Schema_logo </p>
+</span>
+</div>
+}
+}
+void PintarConcept(Concept pConcept, GnossOCBase.LanguageEnum idiomaUsuario) {
+
+}
+}
+}

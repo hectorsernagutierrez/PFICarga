@@ -1,0 +1,252 @@
+@using ClubpfihsOntology;
+@using TemporadapfihsOntology;
+@using PersonapfihsOntology;
+@using PersonapfihsOntology;
+@using GnossBase;
+@model ResourceViewModel
+@{
+	ResourceModel FichaDocumento = Model.Resource;
+	CommunityModel Comunidad = Html.GetComunidad();
+	UserIdentityModel IdentidadActual = Html.GetIdentidadActual();
+	Html.AddBodyClass(" SportsClubModel ");
+	if (FichaDocumento.ItemLinkedFotoVersion != 0 && !string.IsNullOrEmpty(FichaDocumento.ItemLinked.ToString()) && FichaDocumento.ItemLinked != Guid.Empty)
+	{
+	string urlPersonalizacion = $"{Html.GetBaseUrlContent()}/{Es.Riam.Util.UtilArchivos.ContentOntologias}/Archivos/{FichaDocumento.ItemLinked.ToString().Substring(0, 3)}";
+	Html.GetListaJS().Add($"{urlPersonalizacion}/{FichaDocumento.ItemLinked.ToString()}.js?v= {FichaDocumento.ItemLinkedFotoVersion}");
+	Html.GetListaCSS().Add($"{urlPersonalizacion}/{FichaDocumento.ItemLinked.ToString()}.css?v= {FichaDocumento.ItemLinkedFotoVersion}");
+	}
+	SemanticResourceModel semCmsModel = Model.SemanticFrom;
+	 GnossOCBase.LanguageEnum idiomaUsuario = (GnossOCBase.LanguageEnum)Enum.Parse(typeof(GnossOCBase.LanguageEnum), Html.GetUtilIdiomas().LanguageCode.ToLower());
+	SportsClub pSportsClub = new SportsClub(semCmsModel,idiomaUsuario);
+}
+<div class="row">
+<div class="col01 col col-12 col-lg-9">
+<div typeof="https://schema.org/SportsClub:sportsclub">
+<div class="contentGroup contenidoPrincipal">
+<div class="group title">
+</div>
+</div>
+<div class="group content semanticView">
+<div class="group group_info">
+<div class="contentGroup">
+<div>
+		<strong>@pSportsClub.GetLabel(nameof(pSportsClub.Schema_name),idiomaUsuario)</strong>
+<span class="values">
+		<p property="@pSportsClub.GetPropertyURI(nameof(pSportsClub.Schema_name))"> @pSportsClub.Schema_name[(int)idiomaUsuario] </p>
+</span>
+</div>
+@if(!string.IsNullOrEmpty(pSportsClub.Schema_logo))
+{
+<div>
+		<strong>@pSportsClub.GetLabel(nameof(pSportsClub.Schema_logo),idiomaUsuario)</strong>
+<span class="values">
+
+</span>
+</div>
+}
+@if(!string.IsNullOrEmpty(pSportsClub.Eschema_league))
+{
+<div>
+		<strong>@pSportsClub.GetLabel(nameof(pSportsClub.Eschema_league),idiomaUsuario)</strong>
+<span class="values">
+		<p property="@pSportsClub.GetPropertyURI(nameof(pSportsClub.Eschema_league))"> @pSportsClub.Eschema_league[(int)idiomaUsuario] </p>
+</span>
+</div>
+}
+@if(pSportsClub.Schema_location!=null)
+{
+<div>
+	@foreach(PostalAddress prop in pSportsClub.Schema_location)
+	{
+		PintarPostalAddress(prop,idiomaUsuario);
+	}
+</div>
+}
+@if(pSportsClub.Schema_award!=null)
+{
+<div>
+		<strong>@pSportsClub.GetLabel(nameof(pSportsClub.Schema_award),idiomaUsuario)</strong>
+<span class="values">
+		@foreach(string prop in pSportsClub.Schema_award)
+		{
+			<p property="@pSportsClub.GetPropertyURI(nameof(pSportsClub.Schema_award))"> @prop </p>
+		}
+</span>
+</div>
+}
+@if(pSportsClub.Schema_alternateName!=null)
+{
+<div>
+		<strong>@pSportsClub.GetLabel(nameof(pSportsClub.Schema_alternateName),idiomaUsuario)</strong>
+<span class="values">
+		@foreach(string prop in pSportsClub.Schema_alternateName)
+		{
+			<p property="@pSportsClub.GetPropertyURI(nameof(pSportsClub.Schema_alternateName))"> @prop </p>
+		}
+</span>
+</div>
+}
+@if(!string.IsNullOrEmpty(pSportsClub.Schema_description))
+{
+<div>
+		<strong>@pSportsClub.GetLabel(nameof(pSportsClub.Schema_description),idiomaUsuario)</strong>
+<span class="values">
+		<p property="@pSportsClub.GetPropertyURI(nameof(pSportsClub.Schema_description))"> @pSportsClub.Schema_description[(int)idiomaUsuario] </p>
+</span>
+</div>
+}
+@if(pSportsClub.Schema_foundingDate!=null)
+{
+<div>
+		<strong>@pSportsClub.GetLabel(nameof(pSportsClub.Schema_foundingDate),idiomaUsuario)</strong>
+<span class="values">
+		<p property="@pSportsClub.GetPropertyURI(nameof(pSportsClub.Schema_foundingDate))"> @pSportsClub.Schema_foundingDate </p>
+</span>
+</div>
+}
+@if(pSportsClub.Schema_parentOrganization!=null)
+{
+<div>
+	@foreach(SportsTeam prop in pSportsClub.Schema_parentOrganization)
+	{
+		PintarSportsTeam(prop,idiomaUsuario);
+	}
+</div>
+}
+</div>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+
+@functions
+{
+ void PintarSportsTeam(SportsTeam pSportsTeam,GnossOCBase.LanguageEnum idiomaUsuario, Observation pObservation){
+<div typeof="https://schema.org/SportsTeam:sportsteam">
+<div class="contentGroup contenidoPrincipal">
+<div class="group title">
+</div>
+</div>
+<div class="group content semanticView">
+<div class="group group_info">
+<div class="contentGroup">
+@if(pSportsTeam.Eschema_season!=null)
+{
+<div>
+	PintarThing(pSportsTeam.Eschema_season,idiomaUsuario);
+</div>
+}
+@if(pSportsTeam.Schema_coach!=null)
+{
+<div>
+	@foreach(Person prop in pSportsTeam.Schema_coach)
+	{
+		PintarPerson(prop,idiomaUsuario);
+	}
+</div>
+}
+@if(pSportsTeam.Schema_athlete!=null)
+{
+<div>
+	@foreach(Person prop in pSportsTeam.Schema_athlete)
+	{
+		PintarPerson(prop,idiomaUsuario);
+	}
+</div>
+}
+</div>
+</div>
+</div>
+
+</div>
+
+}
+ void PintarPostalAddress(PostalAddress pPostalAddress,GnossOCBase.LanguageEnum idiomaUsuario, Observation pObservation){
+<div typeof="https://schema.org/PostalAddress:postaladdress">
+<div class="contentGroup contenidoPrincipal">
+<div class="group title">
+</div>
+</div>
+<div class="group content semanticView">
+<div class="group group_info">
+<div class="contentGroup">
+@if(!string.IsNullOrEmpty(pPostalAddress.Schema_streetAddress))
+{
+<div>
+		<strong>@pPostalAddress.GetLabel(nameof(pPostalAddress.Schema_streetAddress),idiomaUsuario)</strong>
+<span class="values">
+		<p property="@pPostalAddress.GetPropertyURI(nameof(pPostalAddress.Schema_streetAddress))"> @pPostalAddress.Schema_streetAddress[(int)idiomaUsuario] </p>
+</span>
+</div>
+}
+@if(!string.IsNullOrEmpty(pPostalAddress.Schema_PostalCode))
+{
+<div>
+		<strong>@pPostalAddress.GetLabel(nameof(pPostalAddress.Schema_PostalCode),idiomaUsuario)</strong>
+<span class="values">
+		<p property="@pPostalAddress.GetPropertyURI(nameof(pPostalAddress.Schema_PostalCode))"> @pPostalAddress.Schema_PostalCode[(int)idiomaUsuario] </p>
+</span>
+</div>
+}
+@if(!string.IsNullOrEmpty(pPostalAddress.Schema_postOfficeBoxNumber))
+{
+<div>
+		<strong>@pPostalAddress.GetLabel(nameof(pPostalAddress.Schema_postOfficeBoxNumber),idiomaUsuario)</strong>
+<span class="values">
+		<p property="@pPostalAddress.GetPropertyURI(nameof(pPostalAddress.Schema_postOfficeBoxNumber))"> @pPostalAddress.Schema_postOfficeBoxNumber[(int)idiomaUsuario] </p>
+</span>
+</div>
+}
+@if(!string.IsNullOrEmpty(pPostalAddress.Schema_addressLocality))
+{
+<div>
+		<strong>@pPostalAddress.GetLabel(nameof(pPostalAddress.Schema_addressLocality),idiomaUsuario)</strong>
+<span class="values">
+		<p property="@pPostalAddress.GetPropertyURI(nameof(pPostalAddress.Schema_addressLocality))"> @pPostalAddress.Schema_addressLocality[(int)idiomaUsuario] </p>
+</span>
+</div>
+}
+<div>
+		<strong>@pPostalAddress.GetLabel(nameof(pPostalAddress.Schema_addressCountry),idiomaUsuario)</strong>
+<span class="values">
+		<p property="@pPostalAddress.GetPropertyURI(nameof(pPostalAddress.Schema_addressCountry))"> @pPostalAddress.Schema_addressCountry[(int)idiomaUsuario] </p>
+</span>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+
+}
+}
+@functions
+{
+void PintarThing(Thing pThing, GnossOCBase.LanguageEnum idiomaUsuario) {
+
+if(pThing.Schema_name!=null)
+{
+<div>
+		<strong>@pThing.GetLabel(nameof(pThing.Schema_name),idiomaUsuario)</strong>
+<span>
+<p property ="@pThing.GetPropertyURI(nameof(pThing.Schema_name))"> @pThing.Schema_name </p>
+</span>
+</div>
+}
+}
+void PintarPerson(Person pPerson, GnossOCBase.LanguageEnum idiomaUsuario) {
+
+if(pPerson.Schema_name!=null)
+{
+<div>
+		<strong>@pPerson.GetLabel(nameof(pPerson.Schema_name),idiomaUsuario)</strong>
+<span>
+<p property ="@pPerson.GetPropertyURI(nameof(pPerson.Schema_name))"> @pPerson.Schema_name </p>
+</span>
+</div>
+}
+}
+}
+}

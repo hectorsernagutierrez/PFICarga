@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CsvHelper.Configuration;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -117,6 +118,36 @@ namespace FutbolOntology.DTO
                 csv.Context.RegisterClassMap<TransfersDTOMap>();
                 var records = csv.GetRecords<TransfersDTO>();
                 return new List<TransfersDTO>(records);
+            }
+        }
+
+
+        public static Dictionary<string, string> ReadPlayerUrisFromCsv(string filePath)
+        {
+            var config = new CsvConfiguration(CultureInfo.InvariantCulture)
+            {
+                Delimiter = ";", // Asume que el CSV está separado por comas
+                HeaderValidated = null, // Desactiva la validación de encabezado
+                MissingFieldFound = null // No arroja error si falta algún campo
+            };
+
+            using (var reader = new StreamReader(filePath))
+            using (var csv = new CsvHelper.CsvReader(reader, config))
+            {
+                csv.Context.RegisterClassMap<PlayerUriDTOMap>();
+                var records = csv.GetRecords<PlayerUriDTO>();
+                var playerUriDictionary = new Dictionary<string, string>();
+
+                foreach (var record in records)
+                {
+                    // Añadir al diccionario el jugador y su URI
+                    if (!playerUriDictionary.ContainsKey(record.PlayerName))
+                    {
+                        playerUriDictionary.Add(record.PlayerName, record.PlayerUri);
+                    }
+                }
+
+                return playerUriDictionary;
             }
         }
 

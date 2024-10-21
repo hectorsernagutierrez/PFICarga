@@ -5,9 +5,9 @@ using System.Globalization;
 using System.IO;
 
 public class PlayerValuationsDTO
-{
+{   
     public string PlayerId { get; set; }
-    public string Date { get; set; }
+    public DateTime Date { get; set; }
     public decimal MarketValueInEur { get; set; }
     public int CurrentClubId { get; set; }
     public string PlayerClubDomesticCompetitionId { get; set; }
