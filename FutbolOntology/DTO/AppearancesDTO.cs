@@ -8,15 +8,17 @@ using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 
 public class AppearancesDTO
 {
-    public int PlayerId { get; set; }
-    public int GameId { get; set; }
+    public string PlayerId { get; set; }
+    public string GameId { get; set; }
     public int MinutesPlayed { get; set; }
     //public bool WasSubstitute { get; set; }
     //public bool WasCaptain { get; set; }
     public string appearanceid { get; set; }
     public string playerClubId { get; set; }
     public string playerCurrentClubId { get; set; }
-    public DateTime date { get; set; }
+    //public DateTime date { get; set; }
+    public string dateString { get; set; }
+    public string Temporada { get { return dateString.Split("-")[2]; } }
     public string playerName { get; set; }
     public string competitionId { get; set; }
     public string yellowCards { get; set; }
@@ -37,7 +39,8 @@ public sealed class AppearancesDTOMap : ClassMap<AppearancesDTO>
         Map(m => m.appearanceid).Name("appearance_id");
         Map(m => m.playerClubId).Name("player_club_id");
         Map(m => m.playerCurrentClubId).Name("player_current_club_id");
-        Map(m => m.date).Name("date");
+        Map(m => m.dateString).Name("date");
+
         Map(m => m.playerName).Name("player_name");
         Map(m => m.competitionId).Name("competition_id");
         Map(m => m.yellowCards).Name("yellow_cards");
@@ -45,8 +48,9 @@ public sealed class AppearancesDTOMap : ClassMap<AppearancesDTO>
         Map(m => m.goals).Name("goals");
         Map(m => m.assists).Name("assists");
         Map(m => m.minutesPlayed).Name("minutes_played");
+       
 
-        
+
     }
 
     

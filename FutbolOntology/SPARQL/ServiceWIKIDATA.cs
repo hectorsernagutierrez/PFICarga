@@ -39,7 +39,7 @@ namespace FutbolOntology.SPARQL
             byte[] responseArray = null;
             int numIntentos = 0;
             string error = "";
-            while (responseArray == null && numIntentos < 500)
+            while (responseArray == null && numIntentos < 50)
             {
                 numIntentos++;
                 try
@@ -223,12 +223,12 @@ LIMIT 100";
         SELECT ?club ?clubLabel ?EntrenadorLabel ?Entrenador ?comienzo ?final";
 
                 string where = $@"WHERE {{
-            ?club wdt:P31 wd:Q476028.  # Instancia de 'club de fútbol'
-            ?club p:P286 ?o.  # Relación con el entrenador
-            ?o ps:P286 ?Entrenador.  # Entrenador
+            ?club wdt:P31 wd:Q476028.  
+            ?club p:P286 ?o. 
+            ?o ps:P286 ?Entrenador.  
             
-            ?o pq:P580 ?comienzo.  # Comienzo del mandato
-            OPTIONAL {{ ?o pq:P582 ?final. }}  # Final del mandato (opcional)
+            ?o pq:P580 ?comienzo.  
+            OPTIONAL {{ ?o pq:P582 ?final. }} 
             
             SERVICE wikibase:label {{ bd:serviceParam wikibase:language '[AUTO_LANGUAGE],en'. }}
         }}
@@ -405,6 +405,8 @@ OFFSET {offset}";
 
         public static void LeerClub(string nombre, out string descripcion, out string logo, out string cp, out string calle, out string ciudad, out string pais, out List<DateTime> fundacion, out List<string> awards, out List<string> alias)
         {
+            string clubwikiid2 = ObtenerClubWIKIIDPorNombre(nombre);
+            string clubwikiid ="wd:"+ clubwikiid2.Split("/").Last();
             descripcion = "N/A";
             logo = "N/A";
             cp = "";
@@ -415,49 +417,43 @@ OFFSET {offset}";
             awards = new List<string>();
             alias = new List<string>();
             // Definir la consulta SPARQL
-            String select2 = $@"SELECT ?club ?clubLabel ?alternativeName ?AlternativeNameLabel ?logo ?foundingDate ?award ?awardLabel ?stadium ?postalCode ?street ?city ?country ?wikipediaArticle";
+            String select2 = $@"SELECT ?club ?clubLabel ?alternativeName ?AlternativeNameLabel ?logo ?foundingDate ?award ?awardLabel ?stadium ?postalCode ?street ?city ?country ?wikipediaArticle ?similarityScore
+";
             String where2 = $@"WHERE {{
-  {{
-    ?club wdt:P31 wd:Q476028;
-          rdfs:label ?clubLabel.
+    {clubwikiid} wdt:P31 wd:Q476028.
+         
+  
     
-    FILTER(LANG(?clubLabel) = ""es"" || LANG(?clubLabel) = ""en"").
-    OPTIONAL {{ ?club wdt:P1448 ?alternativeName. }}
-    FILTER(CONTAINS(LCASE(?clubLabel), ""{nombre}"") || CONTAINS(LCASE(?alternativeName), ""{nombre}"")).
-  }}
-  UNION
-  {{
-    ?club wdt:P31 wd:Q103229495;
-          rdfs:label ?clubLabel.
-    FILTER(LANG(?clubLabel) = ""es"" || LANG(?clubLabel) = ""en"").
-    OPTIONAL {{ ?club wdt:P1448 ?alternativeName. }}
-    FILTER(CONTAINS(LCASE(?clubLabel), ""{nombre}"") || CONTAINS(LCASE(?alternativeName), ""{nombre}"")).
-  }}
-  OPTIONAL {{ ?club wdt:P154 ?logo. }}
-  
-  OPTIONAL {{ ?club wdt:P571 ?foundingDate. }}
-  
-  OPTIONAL {{ 
-    ?club wdt:P166 ?award.
-    ?award rdfs:label ?awardLabel FILTER(LANG(?awardLabel) = ""es"").
-  }}
-  
-  OPTIONAL {{
-    ?club wdt:P115 ?stadium.
-    OPTIONAL {{ ?stadium wdt:P281 ?postalCode. }} 
-    OPTIONAL {{ ?stadium wdt:P669 ?street. }}     
-    OPTIONAL {{ ?stadium wdt:P131 ?city. }}       
-    OPTIONAL {{ ?stadium wdt:P17 ?country. }}     
-  }}
+        ?club skos:altLabel ?alternativeName.
+        
+
    
-  OPTIONAL {{
-    ?wikipediaArticle schema:about ?club;
-                      schema:isPartOf <https://en.wikipedia.org/>.
-  }}
- 
-  SERVICE wikibase:label {{ bd:serviceParam wikibase:language ""es,en"". }}
+    
+    OPTIONAL {{ ?club wdt:P154 ?logo. }} 
+    OPTIONAL {{ ?club wdt:P571 ?foundingDate. }} 
+    OPTIONAL {{ 
+        ?club wdt:P166 ?award.
+        ?award rdfs:label ?awardLabel FILTER(LANG(?awardLabel) = ""es"").  
+    }}
+    OPTIONAL {{ 
+        ?club wdt:P115 ?stadium.  
+        OPTIONAL {{ ?stadium wdt:P281 ?postalCode. }}  
+        OPTIONAL {{ ?stadium wdt:P669 ?street. }} 
+        OPTIONAL {{ ?stadium wdt:P131 ?city. }}  
+        OPTIONAL {{ ?stadium wdt:P17 ?country. }}  
+    }}
+   
+    OPTIONAL {{
+        ?wikipediaArticle schema:about ?club;
+                          schema:isPartOf <https://en.wikipedia.org/>. 
+    }}
+
+    SERVICE wikibase:label {{ 
+        bd:serviceParam wikibase:language ""[AUTO_LANGUAGE],en"".  
+    }}
 }}
-LIMIT 10
+ORDER BY ?similarityScore
+LIMIT 1
 ";
 
             SparqlObject datos = new SparqlObject();
@@ -729,21 +725,28 @@ LIMIT {limit} OFFSET {offset}
        (GROUP_CONCAT(DISTINCT ?name; separator=', ') AS ?alternativeNames)";
 
             string where = $@"WHERE {{
-        ?club wdt:P31 wd:Q476028. 
+    ?club wdt:P31 wd:Q476028.  
+    
+    # Get alternative names using skos:altLabel
+    OPTIONAL {{ 
         ?club skos:altLabel ?AlternativeNameLabel. 
-        BIND (?AlternativeNameLabel AS ?name)
-
-        
-        OPTIONAL {{
-           ?club wdt:P1449 ?Apodo.
-           BIND (?ApodoLabel AS ?name)
-        }}
-
-       
-        SERVICE wikibase:label {{ bd:serviceParam wikibase:language 'en,[AUTO_LANGUAGE]'. }}
+        FILTER(LANG(?AlternativeNameLabel) IN ('es', 'en','it'))  
+        BIND(?AlternativeNameLabel AS ?name)
     }}
-    GROUP BY ?club ?clubLabel
-    LIMIT {limit} OFFSET {offset}";
+    
+    # Get nicknames (P1449)
+    OPTIONAL {{ 
+        ?club wdt:P1449 ?Apodo.  
+        FILTER(LANG(?Apodo) IN ('es', 'en','it'))  
+        BIND(?Apodo AS ?name)
+    }}
+    
+    SERVICE wikibase:label {{ 
+        bd:serviceParam wikibase:language 'en,[AUTO_LANGUAGE]'. 
+    }}
+}}
+GROUP BY ?club ?clubLabel
+LIMIT {limit} OFFSET {offset}";
 
             // Ejecutar la consulta SPARQL usando el método Jsonget
             SparqlObject datos = ServiceWIKIDATA.Jsonget(select, where);
@@ -907,9 +910,7 @@ LIMIT {limit} OFFSET {offset}
         ?club wdt:P31 wd:Q476028.  
         ?club wdt:P154 ?logo.  
         
-        FILTER EXISTS {{
-            ?club wdt:P31 wd:Q476028.  
-        }}
+        
         
         SERVICE wikibase:label {{ bd:serviceParam wikibase:language 'en,[AUTO_LANGUAGE]'. }}
     }}
@@ -927,7 +928,7 @@ LIMIT {limit} OFFSET {offset}
                     string clubName = binding.ContainsKey("clubLabel") ? binding["clubLabel"].value : "N/A";
 
                     // Obtener el logotipo del club
-                    string logoLabel = binding.ContainsKey("logo") ? binding["logo"].value : "";
+                    string logoLabel = binding.ContainsKey("logoLabel") ? binding["logoLabel"].value : "";
 
                     // Agregar al diccionario
                     if (!clubsDictionary.ContainsKey(clubName))
@@ -1120,8 +1121,8 @@ LIMIT {limit} OFFSET {offset}
         SELECT ?club ?clubLabel ?foundingDate";
 
                 string where = $@"WHERE {{
-            ?club wdt:P31 wd:Q476028.  # Instancia de 'club de fútbol'
-            ?club wdt:P571 ?foundingDate.  # Fecha de fundación
+            ?club wdt:P31 wd:Q476028. 
+            ?club wdt:P571 ?foundingDate.  
             
             SERVICE wikibase:label {{ bd:serviceParam wikibase:language 'en,[AUTO_LANGUAGE]'. }}
         }}
@@ -1281,7 +1282,7 @@ LIMIT {limit} OFFSET {offset}
             altura = 0;
 
             // Definir la consulta SPARQL
-            string select = @"
+            string select = $@"
     SELECT ?entrenadorLabel ?fechaNacimiento ?imagen ?premioLabel ?ciudadNacimientoLabel ?paisNacimientoLabel ?nacionalidadLabel ?altura";
 
             string where = $@"
@@ -1359,6 +1360,52 @@ LIMIT {limit} OFFSET {offset}
             }
         }
 
+        public static string ObtenerClubWIKIIDPorNombre(string nombreClub)
+        {
+            // Definir la consulta SPARQL
+            string select = $@"
+    SELECT ?club ";
+
+            string where = $@"WHERE {{
+    ?club wdt:P31 wd:Q476028;  # Club is an instance of a football club
+          rdfs:label ?clubLabel.
+
+    # Normalize clubLabel and input: remove accents, commas, periods, and spaces
+    BIND(LCASE(REPLACE(REPLACE(REPLACE(REPLACE(?clubLabel, ""[ÁÉÍÓÚáéíóú]"", ""a""), ""[,\\.]"", """"), ""\\s"", """"), ""-"", """")) AS ?clubNormalizedLabel)
+    BIND(LCASE(REPLACE(REPLACE(REPLACE(REPLACE('{nombreClub}', ""[ÁÉÍÓÚáéíóú]"", ""a""), ""[,\\.]"", """"), ""\\s"", """"), ""-"", """")) AS ?inputNormalized)
+
+    # Ensure the input string contains the normalized main club label
+    FILTER(CONTAINS(?inputNormalized, ?clubNormalizedLabel))
+
+    # Mandatory: Club must have skos:altLabel
+    ?club skos:altLabel ?alternativeName.
+    FILTER(LANG(?alternativeName) IN (""en"", ""es""))
+
+    # Normalize skos:altLabel values (alternative names)
+    BIND(LCASE(REPLACE(REPLACE(REPLACE(REPLACE(?alternativeName, ""[ÁÉÍÓÚáéíóú]"", ""a""), ""[,\\.]"", """"), ""\\s"", """"), ""-"", """")) AS ?alternativeNormalizedLabel)
+
+    # Ensure the input string contains the normalized alternative name
+    FILTER(CONTAINS(?inputNormalized, ?alternativeNormalizedLabel))
+}}
+LIMIT 1 ";
+
+            // Ejecutar la consulta SPARQL
+            SparqlObject datos = ServiceWIKIDATA.Jsonget(select, where);
+
+            // Procesar los resultados
+            if (datos.results != null && datos.results.bindings != null && datos.results.bindings.Count > 0)
+            {
+                // Obtener el URI del club
+                var binding = datos.results.bindings[0];
+                if (binding.ContainsKey("club"))
+                {
+                    return binding["club"].value;
+                }
+            }
+
+            // Retornar null si no se encuentra
+            return null;
+        }
 
 
 

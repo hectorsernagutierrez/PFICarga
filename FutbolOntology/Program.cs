@@ -18,6 +18,8 @@ using System.Reflection.Metadata;
 using static GnossBase.GnossOCBase;
 using FutbolOntology.CargaPFI;
 using FutbolOntology.SPARQL;
+using ClubpfihsOntology;
+using FutbolOntology.DTO;
 #region Conexion comunidad
 
 
@@ -169,9 +171,11 @@ tesauro.Collection.Member.FirstOrDefault().PrefLabel = new Dictionary<string, st
 
 #region rutas
 string appearancesFile = @"Dataset/appearances.csv";
+string appearancesESITFile = @"Dataset/appearances_filtrado.csv";
 string clubGamesFile = @"Dataset/club_games.csv";
 string clubsFile = @"Dataset/clubs.csv";
 string clubsESFile = @"Dataset/clubs_filtradoES.csv";
+string clubsITFile = @"Dataset/club_filtradoit.csv";
 string competitionsFile = @"Dataset/competitions.csv";
 string gameEventsFile = @"Dataset/game_events.csv";
 string gameLineupsFile = @"Dataset/game_lineups.csv";
@@ -183,9 +187,12 @@ string transfersFile = @"Dataset/transfers.csv";
 string consultaFile = @"Dataset/consulta.csv";
 
 string appearancesFilePath = Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase, appearancesFile);
+string appearancesESITFilePath = Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase, appearancesESITFile);
+
 string clubGamesFilePath = Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase, clubGamesFile);
 string clubsFilePath = Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase, clubsFile);
 string clubsESFilePath = Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase, clubsESFile);
+string clubsITFilePath = Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase, clubsITFile);
 string competitionsFilePath = Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase, competitionsFile);
 string gameEventsFilePath = Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase, gameEventsFile);
 string gameLineupsFilePath = Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase, gameLineupsFile);
@@ -208,9 +215,19 @@ string consultaFilePath = Path.Combine(AppDomain.CurrentDomain.SetupInformation.
 
 #region cargar clubs
 FutbolOntology.CargaPFI.Club c = new FutbolOntology.CargaPFI.Club(mResourceApi);
-Dictionary<string,List<DateTime>> d = new Dictionary<string,List<DateTime>>();  
+//Dictionary<string,List<DateTime>> d = new Dictionary<string,List<DateTime>>();
+//DTOService service = new DTOService();
+//List<AppearancesDTO> appearances = service.ReadAppearances(appearancesESITFile);
 
-c.CargarTodosClub(clubsESFilePath, playersESITFilePath, playerValuationsFilePath);
+//Dictionary<string, List<AppearancesDTO>> appearancesClub = c.AgruparPorClub(appearances);
 
+//ServiceWIKIDATA.LeerClub("girona", out string descripcion, out string logo, out string cp, out string calle, out string ciudad, out string pais, out List<DateTime> fundacion, out List<string> awards, out List<string> alias);
+//   foreach(var s in alias)
+//{
+//    Console.WriteLine(s);
+//}
+
+//c.CargarTodosClub(clubsESFilePath, appearancesESITFilePath, playerValuationsFilePath);
+c.CargarTodosClub(clubsITFilePath, appearancesESITFile, playerValuationsFilePath);
 
 #endregion cargar clubs
