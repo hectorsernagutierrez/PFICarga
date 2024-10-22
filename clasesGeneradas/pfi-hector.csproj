@@ -4,8 +4,11 @@
   </PropertyGroup>
   <ItemGroup>
 	  <PackageReference Include="EnterpriseLibrary.Data.NetCore" Version="6.3.2" />
+	  <PackageReference Include="FuzzySharp" Version="2.0.2" />
 	  <PackageReference Include="GnossApiWrapper.NetCore" Version="6.2.0" />
+	  <PackageReference Include="HtmlAgilityPack" Version="1.11.67" />
 	  <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+	  <PackageReference Include="Selenium.WebDriver" Version="4.25.0" />
 	<Reference Include="Es.Riam.Gnoss.Web.MVC.Models, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Libraries\Es.Riam.Gnoss.Web.MVC.Models.dll</HintPath>

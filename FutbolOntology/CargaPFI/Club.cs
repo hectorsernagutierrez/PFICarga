@@ -20,7 +20,14 @@ using ClubpfihsOntology;
 using Gnoss.ApiWrapper.ApiModel;
 using FutbolOntology.SPARQL;
 using Serilog;
-
+using HtmlAgilityPack;
+using FuzzySharp;
+using Microsoft.AspNetCore.Mvc.RazorPages.Infrastructure;
+using System.Net.Security;
+using System.Net;
+using System.Security.Cryptography.X509Certificates;
+using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium;
 namespace FutbolOntology.CargaPFI
 {
     public class Club
@@ -39,21 +46,21 @@ namespace FutbolOntology.CargaPFI
             this.apiRecursos = api;
         }
 
-        public void CargarTodosClub(string rutaDirectorioClub, string rutaDirectorioPersona, string rutaDirectorioValoracion)
+        public void CargarTodosClub(string rutaDirectorioClub, string rutaDirectorioAppearance, string rutaDirectorioValoracion)
         {
+
             int i = 0;
             var service = new DTOService();
+
             List<ClubsDTO> clubs = service.ReadClubs(rutaDirectorioClub);
             // Dictionary<string, Dictionary<string, object>> diccionarioGrande = ServiceWIKIDATA.LeerClub2(3000, 0);
             // Dictionary<string, object> diccionariopeque = new Dictionary<string, object>();
 
-
-
-            var entrenadoresDiccionario = ServiceWIKIDATA.ObtenerEntrenadoresPorClub(10000, 0);
             var nombresAlternativosDiccionario = ServiceWIKIDATA.ObtenerTodasLosNombresAlternativos();
+            var logotiposDiccionario = ServiceWIKIDATA.LeerLogotiposClub();
+            var entrenadoresDiccionario = ServiceWIKIDATA.ObtenerEntrenadoresPorClub(10000, 0);
             var premiosDiccionario = ServiceWIKIDATA.ObtenerTodosLosPremios();
             var direccionesPostalesDiccionario = ServiceWIKIDATA.ObtenerTodasLasDireccionesPostales();
-            var logotiposDiccionario = ServiceWIKIDATA.ObtenerTodosLosLogotipos();
             var wikipediaDiccionario = ServiceWIKIDATA.ObtenerTodosLosArticulosWikipedia();
             var fundacionDiccionario = ServiceWIKIDATA.ObtenerFechasFundacionMasAntiguas();
             // Obtener la ruta base de la aplicación
@@ -61,7 +68,7 @@ namespace FutbolOntology.CargaPFI
 
             Random rnd = new Random();
 
-           
+
 
 
             foreach (var club in clubs.OrderBy(x => rnd.Next()))
@@ -69,7 +76,7 @@ namespace FutbolOntology.CargaPFI
 
                 try
                 {
-
+                    Console.WriteLine($@"Cargando club: {club.Name}");
 
                     //Busqueda sparl para no añadir los que ya están.
                     string select = string.Empty, where = string.Empty;
@@ -98,6 +105,8 @@ namespace FutbolOntology.CargaPFI
                         Dictionary<string, List<DateTime>> listaEntr = new Dictionary<string, List<DateTime>>();
 
                         string nombreBuscado = club.Name;
+
+
                         string clubClave = null;
 
                         // Primero buscar en nombres de clubes principales
@@ -118,24 +127,56 @@ namespace FutbolOntology.CargaPFI
                             }
                         }
 
+
+
+
+                        List<string> prem;
+                        List<string> nomalt;
+                        List<ClubpfihsOntology.PostalAddress> loc;
+                        string logo;
+                        string descrip;
+                        DateTime fundacion;
+
                         // Si no encontramos el club, devolver null
-                        if (clubClave == null)
+                        if (clubClave != null)
                         {
-                            Console.WriteLine($"No se encontró ningún club con el nombre {nombreBuscado}");
-
-                        }
-                        else
-                        {
-
-
-
-
+                            Console.WriteLine($"Se encontró ningún club exacto con el nombre {nombreBuscado}");
+                            clubClave = nombreBuscado;
                             sportsClub.Schema_alternateName = nombresAlternativosDiccionario.ContainsKey(clubClave) ? nombresAlternativosDiccionario[clubClave] : new List<string>();
                             sportsClub.Schema_award = premiosDiccionario.ContainsKey(clubClave) ? premiosDiccionario[clubClave] : new List<string>();
                             sportsClub.Schema_location = direccionesPostalesDiccionario.ContainsKey(clubClave) ? direccionesPostalesDiccionario[clubClave] : new List<ClubpfihsOntology.PostalAddress>();
                             sportsClub.Schema_logo = logotiposDiccionario.ContainsKey(clubClave) ? logotiposDiccionario[clubClave] : null;
                             sportsClub.Schema_description = wikipediaDiccionario.ContainsKey(clubClave) ? wikipediaDiccionario[clubClave] : null;
                             sportsClub.Schema_foundingDate = fundacionDiccionario.ContainsKey(clubClave) ? (DateTime?)fundacionDiccionario[clubClave] : null;
+
+
+                           // prem = DiccionarioSimilar<List<string>>.ObtenerIgualOSimilar(premiosDiccionario, clubClave);
+                           // nomalt = DiccionarioSimilar<List<string>>.ObtenerIgualOSimilar(nombresAlternativosDiccionario, clubClave);
+                           //  loc= DiccionarioSimilar<List<ClubpfihsOntology.PostalAddress>>.ObtenerIgualOSimilar(direccionesPostalesDiccionario, clubClave);
+                           // logo = DiccionarioSimilar<string>.ObtenerIgualOSimilar(logotiposDiccionario, clubClave);
+                           //descrip  = DiccionarioSimilar<string>.ObtenerIgualOSimilar(wikipediaDiccionario, clubClave);
+                           // fundacion = DiccionarioSimilar<DateTime>.ObtenerIgualOSimilar(fundacionDiccionario, clubClave);
+                        
+                        
+                        }
+                        else
+                        {
+                            Console.WriteLine($"NO se encontró ningún club exacto con el nombre {nombreBuscado}");
+                            //ServiceWIKIDATA.LeerClub(nombreBuscado, out descrip, out logo, out string cp, out string calle, out string ciudad, out string pais, out List<DateTime> fundacion1, out prem, out nomalt);
+                            //fundacion = fundacion1.First();
+                            //loc = new List<ClubpfihsOntology.PostalAddress>();
+                            //loc.Add(new ClubpfihsOntology.PostalAddress() { Schema_PostalCode = cp , Schema_streetAddress=calle,Schema_addressLocality=ciudad,Schema_addressCountry=pais});
+
+                            //sportsClub.Schema_alternateName = nomalt;
+                            //sportsClub.Schema_award = prem;
+                            //sportsClub.Schema_location = loc;
+                            sportsClub.Schema_logo = Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase, @"Documents/Logo.png");
+                            //sportsClub.Schema_description = descrip;
+                            //sportsClub.Schema_foundingDate = fundacion;
+                            clubClave = club.Name;
+
+                        }
+                           
                             if (entrenadoresDiccionario.ContainsKey(clubClave))
                             {
                                 listaEntr = (Dictionary<string, List<DateTime>>)entrenadoresDiccionario[clubClave];
@@ -145,55 +186,61 @@ namespace FutbolOntology.CargaPFI
                                 listaEntr = null;
                             }
 
-                        }
-                        sportsClub.Schema_parentOrganization = Plantilla(rutaDirectorioPersona, rutaDirectorioValoracion, club.Name, listaEntr);
+                        
+                        List<AppearancesDTO> appearances = service.ReadAppearances(rutaDirectorioAppearance);
+
+                        Dictionary<string, List<AppearancesDTO>> appearancesClub = AgruparPorClub(appearances);
+
+                        Console.WriteLine($"Cargado {i}: {club.Name}");
+                        sportsClub.Schema_parentOrganization = Plantilla2(club.ClubId, appearancesClub[club.ClubId], listaEntr, rutaDirectorioValoracion);
                         sportsClub.Eschema_league = club.DomesticCompetitionId;
 
 
                         i++;
                         Console.WriteLine($"{i}:");
                         Console.WriteLine("");
-                       
+
                         apiRecursos.ChangeOntology(ontologiaClub);
                         ComplexOntologyResource recursoPersona = sportsClub.ToGnossApiResource(apiRecursos, new List<string> { "Club" }, Guid.NewGuid(), Guid.NewGuid());
                         apiRecursos.LoadComplexSemanticResource(recursoPersona);
                     }
                 }
-                catch (Exception ex )
+                catch (Exception ex)
                 {
                     Console.Write("error:  "); Console.WriteLine(ex.ToString());
                 }
-        }
+            }
 
 
 
 
         }
-        
-        public List<SportsTeam> Plantilla(string rutaDirectorioPersona, string rutaDirectorioValoracion,string clubName, Dictionary<string, List<DateTime>> listaEntr)
+
+        public List<SportsTeam> Plantilla(string rutaDirectorioAppearance, string rutaDirectorioValoracion, string clubId, Dictionary<string, List<DateTime>> listaEntr)
         {
-            
+
             Dictionary<string, List<string>> resultado = ExtraerEntrenadoresPorTemporada(listaEntr);
 
             var service = new DTOService();
-            List<PlayersDTO> players = service.ReadPlayers(rutaDirectorioPersona);
-
+            // List<PlayersDTO> players = service.ReadPlayers(rutaDirectorioPersona);
+            List<AppearancesDTO> appearances = service.ReadAppearances(rutaDirectorioAppearance);
 
             // Crear el diccionario usando un Tuple como clave
-            var grupos = players
-                .GroupBy(p => new { p.LastSeason, p.CurrentClubName })
+            var grupos = appearances
+                .GroupBy(p => new { p.Temporada, p.playerClubId, p.PlayerId })
                 .ToDictionary(
-                    g => Tuple.Create(g.Key.CurrentClubName, g.Key.LastSeason), // La clave es un Tuple de Club y Temporada
+                    g => Tuple.Create(g.Key.playerClubId, g.Key.Temporada, g.Key.PlayerId), // La clave es un Tuple de Club y Temporada
                     g => new ClubTemporadaDTO
                     {
-                        Temporada = g.Key.LastSeason,
-                        Club = g.Key.CurrentClubName,
+                        Temporada = g.Key.Temporada,
+                        Club = g.Key.playerClubId,
+                        IdPlayer = g.Key.playerClubId,
                         Jugadores = g.ToList()
                     }
                 );
             List<SportsTeam> plantillas = new List<SportsTeam>();
             SportsTeam planti = new SportsTeam();
-            foreach (var key in grupos.Keys.Where(k => k.Item1 == clubName))  // Filtrar claves 
+            foreach (var key in grupos.Keys.Where(k => k.Item1 == clubId))  // Filtrar claves 
             {
                 var clubTemporada = grupos[key]; // Obtener el valor del diccionario
 
@@ -218,10 +265,10 @@ namespace FutbolOntology.CargaPFI
                 foreach (var jugador in clubTemporada.Jugadores)
                 {
                     Torneo t = new Torneo(apiRecursos);
-                    jugadoresuri.Add(t.getPlayerUrl(jugador.PlayerId, jugador.Name, rutaDirectorioValoracion));
+                    jugadoresuri.Add(t.getPlayerUrl(jugador.PlayerId, jugador.playerName, rutaDirectorioValoracion));
                 }
                 planti.IdsSchema_athlete = jugadoresuri;
-               
+
                 plantillas.Add(planti);
             }
 
@@ -324,16 +371,193 @@ namespace FutbolOntology.CargaPFI
 
 
 
+        public List<SportsTeam> Plantilla2(string clubId, List<AppearancesDTO> aparicionesDelClub, Dictionary<string, List<DateTime>> listaEntr, string rutaDirectorioValoracion)
+        {
+            Dictionary<string, List<string>> resultado = ExtraerEntrenadoresPorTemporada(listaEntr);
+
+            // Agrupar las apariciones del club por Temporada
+            var aparicionesPorTemporada = aparicionesDelClub
+                .GroupBy(a => a.Temporada)
+                .ToDictionary(
+                    g => g.Key, // Clave: Temporada
+                    g => g.ToList() // Valor: Lista de apariciones en esa temporada
+                );
+
+            List<SportsTeam> plantillas = new List<SportsTeam>();
+
+            foreach (var temporada in aparicionesPorTemporada.Keys)
+            {
+                var aparicionesTemporada = aparicionesPorTemporada[temporada]; // Obtener las apariciones de esta temporada
+                SportsTeam planti = new SportsTeam
+                {
+                    Eschema_identifier = "",
+                    IdEschema_season = getTemporadaUrl(temporada)
+                };
+
+                // Obtener entrenadores sin duplicados para la temporada
+                List<string> coachsuri = new List<string>();
+                if (resultado != null && resultado.ContainsKey(temporada))
+                {
+                    // Usar Distinct para asegurar que cada entrenador solo aparece una vez
+                    var entrenadoresUnicos = resultado[temporada].Distinct();
+                    foreach (var entrenador in entrenadoresUnicos)
+                    {
+                        Torneo t = new Torneo(apiRecursos);
+                        coachsuri.Add(t.getManager(entrenador));
+                    }
+                }
+                planti.IdsSchema_coach = coachsuri;
+
+                // Obtener jugadores sin duplicados para la temporada
+                List<string> jugadoresuri = new List<string>();
+                Torneo torneo = new Torneo(apiRecursos); // Crear la instancia una vez para evitar overhead
+
+                // Agrupar apariciones por jugador para asegurar que cada jugador solo aparece una vez
+                var jugadoresUnicos = aparicionesTemporada
+                    .GroupBy(a => new { a.PlayerId, a.playerName }) // Agrupar por jugador
+                    .Select(g => g.First()); // Seleccionar solo una aparición por jugador
+
+                foreach (var jugador in jugadoresUnicos)
+                {
+                    jugadoresuri.Add(torneo.getPlayerUrl(jugador.PlayerId, jugador.playerName, rutaDirectorioValoracion));
+                }
+                planti.IdsSchema_athlete = jugadoresuri;
+
+                plantillas.Add(planti);
+            }
+
+            return plantillas;
+        }
+
+        public Dictionary<string, List<AppearancesDTO>> AgruparPorClub(List<AppearancesDTO> appearances)
+        {
+            // Agrupamos las apariciones por clubId
+            return appearances
+                .GroupBy(a => a.playerClubId)
+                .ToDictionary(g => g.Key, g => g.ToList());
+        }
+
+
+
+
+
+        public Dictionary<string, string> ObtenerLogosClubesWebScraper(string urlPagina)
+        {
+            // Diccionario para almacenar el nombre del club y la URL de su logo
+            Dictionary<string, string> logosClubes = new Dictionary<string, string>();
+            // Almacenar la validación SSL original
+            RemoteCertificateValidationCallback originalValidationCallback = ServicePointManager.ServerCertificateValidationCallback;
+
+            try
+            {
+                // Deshabilitar la validación del certificado SSL
+                ServicePointManager.ServerCertificateValidationCallback =
+                    delegate (object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
+                    {
+                        return true;
+                    };
+
+                // Cargar la página HTML
+                HtmlWeb web = new HtmlWeb();
+            HtmlDocument document = web.Load(urlPagina);
+
+            // Seleccionar los nombres de los clubes (ejemplo basado en estructura de la página)
+            var clubNames = document.DocumentNode.SelectNodes("//div[contains(@class, 'post-content')]/p/a");
+
+            // Seleccionar las URLs de los logos (usualmente en tags <img>)
+            var clubLogos = document.DocumentNode.SelectNodes("//div[contains(@class, 'post-content')]/p/a/img");
+
+            if (clubNames != null && clubLogos != null && clubNames.Count == clubLogos.Count)
+            {
+                for (int i = 0; i < clubNames.Count; i++)
+                {
+                    // Extraer el nombre del club
+                    string nombreClub = clubNames[i].InnerText.Trim();
+
+                    // Extraer la URL del logo
+                    string urlLogo = clubLogos[i].GetAttributeValue("src", "");
+
+                    // Agregar al diccionario
+                    logosClubes[nombreClub] = urlLogo;
+                }
+            }
+            }
+            finally
+            {
+                // Restaurar la validación SSL original
+                ServicePointManager.ServerCertificateValidationCallback = originalValidationCallback;
+            }
+
+            return logosClubes;
+        }
+
+
+
+
+
+
+        public Dictionary<string, string> ObtenerLogosClubesWeb(string urlPagina)
+        {
+            // Diccionario para almacenar el nombre del club y la URL de su logo
+            Dictionary<string, string> logosClubes = new Dictionary<string, string>();
+
+            // Configuración del navegador en modo headless y para ignorar los errores SSL
+            ChromeOptions options = new ChromeOptions();
+            options.AddArgument("--headless"); // Ejecutar en modo sin interfaz gráfica
+            options.AddArgument("--ignore-certificate-errors"); // Ignorar errores de certificados SSL
+            options.AddArgument("--allow-insecure-localhost");  // Permitir localhost inseguro
+            options.AddArgument("--disable-web-security");      // Desactivar la seguridad web
+
+            // Inicializar el driver de Chrome
+            using (IWebDriver driver = new ChromeDriver(options))
+            {
+                // Cargar la página web
+                driver.Navigate().GoToUrl(urlPagina);
+
+                // Esperar a que la página cargue completamente
+                System.Threading.Thread.Sleep(3000); // Ajustar tiempo de espera según la velocidad de la página
+
+                // Obtener los nombres de los equipos
+                var clubNames = driver.FindElements(By.XPath("//div[contains(@class, 'post-content')]/p/a"));
+
+                // Obtener los logos de los equipos
+                var clubLogos = driver.FindElements(By.XPath("//div[contains(@class, 'post-content')]/p/a/img"));
+
+                if (clubNames.Count == clubLogos.Count)
+                {
+                    for (int i = 0; i < clubNames.Count; i++)
+                    {
+                        // Extraer el nombre del club
+                        string nombreClub = clubNames[i].Text.Trim();
+
+                        // Extraer la URL del logo
+                        string urlLogo = clubLogos[i].GetAttribute("src");
+
+                        // Agregar al diccionario
+                        logosClubes[nombreClub] = urlLogo;
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("El número de nombres y logos no coincide.");
+                }
+            }
+
+            return logosClubes;
+        }
 
     }
 
 
 
-
 }
+
+
 public class ClubTemporadaDTO
 {
     public string Temporada { get; set; }
+    public string IdPlayer { get; set; }
+    public string NamePlayer { get; set; }
     public string Club { get; set; }
-    public List<PlayersDTO> Jugadores { get; set; }
+     public List<AppearancesDTO> Jugadores { get; set; }
 }
