@@ -23,8 +23,8 @@ namespace TipopfihsOntology
 	{
 		public Thing(string pIdentificador) : base()
 		{
-			Identificador = pIdentificador;
-		}
+            Identificador = pIdentificador;
+        }
 
 		public Thing(SemanticEntityModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
 		{
