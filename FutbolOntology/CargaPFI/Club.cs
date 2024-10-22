@@ -214,8 +214,8 @@ namespace FutbolOntology.CargaPFI
                         Console.WriteLine("");
 
                         apiRecursos.ChangeOntology(ontologiaClub);
-                        ComplexOntologyResource recursoPersona = sportsClub.ToGnossApiResource(apiRecursos, new List<string> { "Club" }, Guid.NewGuid(), Guid.NewGuid());
-                        apiRecursos.LoadComplexSemanticResource(recursoPersona);
+                        ComplexOntologyResource recursoClub = sportsClub.ToGnossApiResource(apiRecursos, new List<string> { "Club" }, Guid.NewGuid(), Guid.NewGuid());
+                        apiRecursos.LoadComplexSemanticResource(recursoClub);
                     }
                 }
                 catch (Exception ex)

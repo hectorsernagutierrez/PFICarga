@@ -17,6 +17,7 @@ using SixLabors.ImageSharp;
 using System.Security.Policy;
 using System.Numerics;
 using FutbolOntology.SPARQL;
+using PartidopfihsOntology;
 
 namespace FutbolOntology.CargaPFI
 {
@@ -40,162 +41,162 @@ namespace FutbolOntology.CargaPFI
             this.apiRecursos = api;
         }
 
-        public void CargarTorneo(string rutaDirectorioCompetitions, string rutaDirectorioPartido, string rutaDirectorioEvento, string rutaDirectorioClub,string rutaDirectorioPersonaValoracion, string rutaDirectorioPersona,string rutaDirectorioValoracion)
-        {
-            var service = new DTOService();
-            List<CompetitionsDTO> competitions = service.ReadCompetitions(rutaDirectorioCompetitions);
-            foreach (var competition in competitions)
-            {
-                SportsTournament tournament = new SportsTournament();
-                tournament.Schema_name = competition.Name.Replace("-"," ").Trim();
-                tournament.Schema_identifier = competition.CompetitionId;
-                tournament.Schema_description = competition.Url;
+        //public void CargarTorneo(string rutaDirectorioCompetitions, string rutaDirectorioPartido, string rutaDirectorioEvento, string rutaDirectorioClub,string rutaDirectorioPersonaValoracion, string rutaDirectorioPersona,string rutaDirectorioValoracion)
+        //{
+        //    var service = new DTOService();
+        //    List<CompetitionsDTO> competitions = service.ReadCompetitions(rutaDirectorioCompetitions);
+        //    foreach (var competition in competitions)
+        //    {
+        //        SportsTournament tournament = new SportsTournament();
+        //        tournament.Schema_name = competition.Name.Replace("-"," ").Trim();
+        //        tournament.Schema_identifier = competition.CompetitionId;
+        //        tournament.Schema_description = competition.Url;
 
-                //HACER: CAMPEON CONSULTA
+        //        //HACER: CAMPEON CONSULTA
 
 
                 
-                if (!string.IsNullOrEmpty(competition.DomesticLeagueCode))
-                {
+        //        if (!string.IsNullOrEmpty(competition.DomesticLeagueCode))
+        //        {
 
-                    string uri = getOrganizerURl(competition.DomesticLeagueCode);    
+        //            string uri = getOrganizerURl(competition.DomesticLeagueCode);    
                    
-                    tournament.IdsSchema_organizer.Add(uri);
-                }
-                else
-                {
-                    string uri = getOrganizerURl("UEFA");
+        //            tournament.IdsSchema_organizer.Add(uri);
+        //        }
+        //        else
+        //        {
+        //            string uri = getOrganizerURl("UEFA");
 
-                    tournament.IdsSchema_organizer.Add(uri);
-                }
+        //            tournament.IdsSchema_organizer.Add(uri);
+        //        }
 
                 
-                tournament.Eschema_subEvent = CargarPartido(rutaDirectorioPartido, rutaDirectorioEvento,rutaDirectorioClub, rutaDirectorioPersonaValoracion, rutaDirectorioPersona, rutaDirectorioValoracion, competition);
+        //        tournament.Eschema_subEvent = CargarPartido(rutaDirectorioPartido, rutaDirectorioEvento,rutaDirectorioClub, rutaDirectorioPersonaValoracion, rutaDirectorioPersona, rutaDirectorioValoracion, competition);
 
 
 
 
-                apiRecursos.ChangeOntology(ontologiaTorneo);
-                ComplexOntologyResource recursoPersona = tournament.ToGnossApiResource(apiRecursos, new List<string> { "Tournament" }, Guid.NewGuid(), Guid.NewGuid());
-                apiRecursos.LoadComplexSemanticResource(recursoPersona);
-            }
+        //        apiRecursos.ChangeOntology(ontologiaTorneo);
+        //        ComplexOntologyResource recursoPersona = tournament.ToGnossApiResource(apiRecursos, new List<string> { "Tournament" }, Guid.NewGuid(), Guid.NewGuid());
+        //        apiRecursos.LoadComplexSemanticResource(recursoPersona);
+        //    }
 
-        }
-
-
+        //}
 
 
 
 
 
-        public  List<SportsEvent> CargarPartido(string rutaDirectorioPartido, string rutaDirectorioEvento, string rutaDirectorioClub,string rutaDirectorioPersonaValoracion,string rutaDirectorioPersona, string rutaDirectorioValoracion,CompetitionsDTO competition)
-        {
-            var service = new DTOService();
-            List<GamesDTO> games = service.ReadGames(rutaDirectorioPartido);
-            List<GameLineupsDTO> playeralineados= service.ReadGameLineups(rutaDirectorioEvento);
-            List<SportsEvent> partidos = new List<SportsEvent>();
-            foreach (var game in games)
-            {
+
+
+        //public  List<SportsEvent> CargarPartido(string rutaDirectorioPartido, string rutaDirectorioEvento, string rutaDirectorioClub,string rutaDirectorioPersonaValoracion,string rutaDirectorioPersona, string rutaDirectorioValoracion,CompetitionsDTO competition)
+        //{
+        //    var service = new DTOService();
+        //    List<GamesDTO> games = service.ReadGames(rutaDirectorioPartido);
+        //    List<GameLineupsDTO> playeralineados= service.ReadGameLineups(rutaDirectorioEvento);
+        //    List<SportsEvent> partidos = new List<SportsEvent>();
+        //    foreach (var game in games)
+        //    {
                 
-                if (game.CompetitionId == competition.CompetitionId)
-                {
-                    SportsEvent sportsEvent = new SportsEvent();
-                    sportsEvent.Eschema_identifier_partido = game.GameId;
-                    sportsEvent.Eschema_result = $"{game.HomeClubName} : {game.HomeClubGoals}  - {game.AwayClubGoals} : {game.AwayClubName}  ";
+        //        if (game.CompetitionId == competition.CompetitionId)
+        //        {
+        //            SportsEvent sportsEvent = new SportsEvent();
+        //            sportsEvent.Eschema_identifier_partido = game.GameId;
+        //            sportsEvent.Eschema_result = $"{game.HomeClubName} : {game.HomeClubGoals}  - {game.AwayClubGoals} : {game.AwayClubName}  ";
                    
-                    //AwayTeam
-                    TorneopfihsOntology.SportsTeam away = IniciarTeams(rutaDirectorioClub, rutaDirectorioPersona, rutaDirectorioValoracion,  game.AwayClubId);
-                    away.IdsSchema_coach.Add(getManager(game.AwayClubManagerName));
-                    away.Eschema_classification = int.TryParse(game.AwayClubPosition, out var result) ? result : (int?)null;
-                    PersonLinedUp athlete ;
-                    List<PersonLinedUp> listAthletesAway = new List<PersonLinedUp>();
-                    List<PersonLinedUp> listAthletesHome = new List<PersonLinedUp>();
-                    foreach (var player in playeralineados)
-                    {
-                        if (player.GameId == game.GameId) {
-                            if (player.ClubId == game.AwayClubId)
-                        {
+        //            //AwayTeam
+        //            TorneopfihsOntology.SportsTeam away = IniciarTeams(rutaDirectorioClub, rutaDirectorioPersona, rutaDirectorioValoracion,  game.AwayClubId);
+        //            away.IdsSchema_coach.Add(getManager(game.AwayClubManagerName));
+        //            away.Eschema_classification = int.TryParse(game.AwayClubPosition, out var result) ? result : (int?)null;
+        //            PersonLinedUp athlete ;
+        //            List<PersonLinedUp> listAthletesAway = new List<PersonLinedUp>();
+        //            List<PersonLinedUp> listAthletesHome = new List<PersonLinedUp>();
+        //            foreach (var player in playeralineados)
+        //            {
+        //                if (player.GameId == game.GameId) {
+        //                    if (player.ClubId == game.AwayClubId)
+        //                {
 
-                                athlete = getPlayerAlineado(player, rutaDirectorioPersonaValoracion);
-                                listAthletesAway.Add(athlete);
-                            }
-                            else if (player.ClubId == game.HomeClubId) {
-                                athlete = getPlayerAlineado(player, rutaDirectorioPersonaValoracion);
-                                listAthletesHome.Add(athlete);
-                            }
-                        }
-                    }
-                    away.Schema_athlete = listAthletesAway;
-                    sportsEvent.Schema_awayTeam = away;
+        //                        athlete = getPlayerAlineado(player, rutaDirectorioPersonaValoracion);
+        //                        listAthletesAway.Add(athlete);
+        //                    }
+        //                    else if (player.ClubId == game.HomeClubId) {
+        //                        athlete = getPlayerAlineado(player, rutaDirectorioPersonaValoracion);
+        //                        listAthletesHome.Add(athlete);
+        //                    }
+        //                }
+        //            }
+        //            away.Schema_athlete = listAthletesAway;
+        //            sportsEvent.Schema_awayTeam = away;
                     
-                    //Home
-                    TorneopfihsOntology.SportsTeam home = IniciarTeams(rutaDirectorioClub, rutaDirectorioPersona, rutaDirectorioValoracion, game.HomeClubId);
-                    home.IdsSchema_coach.Add(getManager(game.HomeClubManagerName));
-                    home.Eschema_classification = int.TryParse(game.HomeClubPosition, out var result2) ? result2 : (int?)null;
-                    home.Schema_athlete = listAthletesHome;
-                    sportsEvent.Schema_homeTeam = home;
+        //            //Home
+        //            TorneopfihsOntology.SportsTeam home = IniciarTeams(rutaDirectorioClub, rutaDirectorioPersona, rutaDirectorioValoracion, game.HomeClubId);
+        //            home.IdsSchema_coach.Add(getManager(game.HomeClubManagerName));
+        //            home.Eschema_classification = int.TryParse(game.HomeClubPosition, out var result2) ? result2 : (int?)null;
+        //            home.Schema_athlete = listAthletesHome;
+        //            sportsEvent.Schema_homeTeam = home;
                     
-                    sportsEvent.Schema_subEvent = CargarEventos(rutaDirectorioEvento, game,sportsEvent);
+        //            sportsEvent.Schema_subEvent = CargarEventos(rutaDirectorioEvento, game,sportsEvent);
 
 
 
 
 
-                    partidos.Add(sportsEvent);
+        //            partidos.Add(sportsEvent);
 
-                }
-
-
-            }
-            return partidos;
-        }
+        //        }
 
 
-        public TorneopfihsOntology.SportsTeam IniciarTeams(string rutaDirectorioClub, string rutaDirectorioPersona, string rutaDirectorioValoracion,string id)
-        {
+        //    }
+        //    return partidos;
+        //}
+
+
+        //public TorneopfihsOntology.SportsTeam IniciarTeams(string rutaDirectorioClub, string rutaDirectorioPersona, string rutaDirectorioValoracion,string id)
+        //{
             
-            SparqlObject resultado = null;
-            string uri = "";
-            string select = string.Empty, where = string.Empty;
-            select += $@"SELECT *";
-            where += $@" WHERE {{ ";
-            where += $@"?s ?p ?o.";
-            where += $@"FILTER(?o LIKE '{id}')";
-            //where += $@"FILTER(REGEX(?o, '{nombre}', 'i'))";
-            where += $@"}}";
-            try
-            {
-                resultado = apiRecursos.VirtuosoQuery(select, where, ontologiaClub);
-            }
-            catch (Exception ex)
-            {
-                //resultado = apiRecursos.VirtuosoQuery(select, where, ontologiaPersona);
+        //    SparqlObject resultado = null;
+        //    string uri = "";
+        //    string select = string.Empty, where = string.Empty;
+        //    select += $@"SELECT *";
+        //    where += $@" WHERE {{ ";
+        //    where += $@"?s ?p ?o.";
+        //    where += $@"FILTER(?o LIKE '{id}')";
+        //    //where += $@"FILTER(REGEX(?o, '{nombre}', 'i'))";
+        //    where += $@"}}";
+        //    try
+        //    {
+        //        resultado = apiRecursos.VirtuosoQuery(select, where, ontologiaClub);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        //resultado = apiRecursos.VirtuosoQuery(select, where, ontologiaPersona);
 
-            }
-
-
-
-            if (resultado != null && resultado.results != null && resultado.results.bindings.Count > 0)//Si existe
-            {
-                uri = resultado.results.bindings[0]["s"].value;
-            }
-            else
-            {
-                Club c = new Club(apiRecursos);
-                c.CargarTodosClub( rutaDirectorioClub,rutaDirectorioPersona,rutaDirectorioValoracion);
-                IniciarTeams(rutaDirectorioClub, rutaDirectorioPersona, rutaDirectorioValoracion,id);
+        //    }
 
 
 
-            }
-            TorneopfihsOntology.SportsTeam Team = new TorneopfihsOntology.SportsTeam();
-            Team.IdSchema_subOrganization = uri;
+        //    if (resultado != null && resultado.results != null && resultado.results.bindings.Count > 0)//Si existe
+        //    {
+        //        uri = resultado.results.bindings[0]["s"].value;
+        //    }
+        //    else
+        //    {
+        //        Club c = new Club(apiRecursos);
+        //        c.CargarTodosClub( rutaDirectorioClub,rutaDirectorioPersona,rutaDirectorioValoracion);
+        //        IniciarTeams(rutaDirectorioClub, rutaDirectorioPersona, rutaDirectorioValoracion,id);
 
 
 
-            return Team;
+        //    }
+        //    TorneopfihsOntology.SportsTeam Team = new TorneopfihsOntology.SportsTeam();
+        //    Team.IdSchema_subOrganization = uri;
 
-        }
+
+
+        //    return Team;
+
+        //}
 
 
         public string getManager(string name)
@@ -452,8 +453,9 @@ namespace FutbolOntology.CargaPFI
         public PersonLinedUp getPlayerAlineado(GameLineupsDTO player, string rutaDirectorioPersonaValoracion)
         {
             PersonLinedUp person = new PersonLinedUp();
-            person.IdEschema_player = getPlayerUrl(player.PlayerId  ,player.PlayerName, rutaDirectorioPersonaValoracion);            
-            person.Eschema_bibNumber = int.TryParse(player.NumberString, out var result) ? result : 0;
+            person.IdEschema_player = getPlayerUrl(player.PlayerId  ,player.PlayerName, rutaDirectorioPersonaValoracion);
+            person.Eschema_bibNumber = player.NumberString;
+            //int.TryParse(player.NumberString, out var result) ? result : 0;
             person.IdEschema_type = getTipoUrl(player.Type);
             person.IdEschema_position= getTipoUrl(player.Position); 
             return person;
@@ -474,7 +476,7 @@ namespace FutbolOntology.CargaPFI
                 if (evento.GameId==game.GameId)
                 {
                     Event eventoEvent = new Event();
-                    eventoEvent.Eschema_identifier_evento = evento.GameEventId;
+                    //eventoEvent.Eschema_identifier_evento = evento.GameEventId;
                     eventoEvent.Eschema_Minute=evento.Minute;
 
                     string uri = getTipoUrl(evento.Type);
@@ -486,7 +488,7 @@ namespace FutbolOntology.CargaPFI
                     {
                         if (player.Eschema_player.Schema_identifier == evento.PlayerId)
                         {
-                            eventoEvent.Schema_actor = player;
+                           // eventoEvent.Schema_actor = player;
                         }
                     }
                     eventos.Add(eventoEvent);   
