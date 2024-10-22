@@ -403,119 +403,24 @@ OFFSET {offset}";
             }
         }
 
-        public static void LeerClub(string nombre, out string descripcion, out string logo, out string cp, out string calle, out string ciudad, out string pais, out List<DateTime> fundacion, out List<string> awards, out List<string> alias)
+        public static Dictionary<string, Dictionary<string, object>> LeerClub2(string nombre,int limit = 3000, int offset = 0)
         {
             string clubwikiid2 = ObtenerClubWIKIIDPorNombre(nombre);
-            string clubwikiid ="wd:"+ clubwikiid2.Split("/").Last();
-            descripcion = "N/A";
-            logo = "N/A";
-            cp = "";
-            calle = "";
-            ciudad = "";
-            pais = "";
-            fundacion = new List<DateTime>();
-            awards = new List<string>();
-            alias = new List<string>();
-            // Definir la consulta SPARQL
-            String select2 = $@"SELECT ?club ?clubLabel ?alternativeName ?AlternativeNameLabel ?logo ?foundingDate ?award ?awardLabel ?stadium ?postalCode ?street ?city ?country ?wikipediaArticle ?similarityScore
-";
-            String where2 = $@"WHERE {{
-    {clubwikiid} wdt:P31 wd:Q476028.
-         
-  
-    
-        ?club skos:altLabel ?alternativeName.
-        
-
-   
-    
-    OPTIONAL {{ ?club wdt:P154 ?logo. }} 
-    OPTIONAL {{ ?club wdt:P571 ?foundingDate. }} 
-    OPTIONAL {{ 
-        ?club wdt:P166 ?award.
-        ?award rdfs:label ?awardLabel FILTER(LANG(?awardLabel) = ""es"").  
-    }}
-    OPTIONAL {{ 
-        ?club wdt:P115 ?stadium.  
-        OPTIONAL {{ ?stadium wdt:P281 ?postalCode. }}  
-        OPTIONAL {{ ?stadium wdt:P669 ?street. }} 
-        OPTIONAL {{ ?stadium wdt:P131 ?city. }}  
-        OPTIONAL {{ ?stadium wdt:P17 ?country. }}  
-    }}
-   
-    OPTIONAL {{
-        ?wikipediaArticle schema:about ?club;
-                          schema:isPartOf <https://en.wikipedia.org/>. 
-    }}
-
-    SERVICE wikibase:label {{ 
-        bd:serviceParam wikibase:language ""[AUTO_LANGUAGE],en"".  
-    }}
-}}
-ORDER BY ?similarityScore
-LIMIT 1
-";
-
-            SparqlObject datos = new SparqlObject();
-
-            datos = ServiceWIKIDATA.Jsonget(select2, where2);
-            List<string> lista = new List<string>();
-
-            if (datos.results != null && datos.results.bindings != null && datos.results.bindings.Count > 0)
-            {
-                foreach (var binding in datos.results.bindings)
-                {
-                    if (binding.ContainsKey("clubLabel"))
-                    {
-                        if (binding["clubLabel"].value == nombre)
-                        {
-                            if (logo != "N/A")
-                            {
-                                descripcion = binding["wikipediaArticle"].value ?? "N/A";
-                                logo = binding["logo"].value ?? "N/A";
-                                calle = binding["street"].value ?? "N/A";
-                                cp = binding["postalCode"].value ?? "N/A";
-                                ciudad = binding["city"].value ?? "N/A";
-                                pais = binding["country"].value ?? "N/A";
-                            }
-                            if (binding.ContainsKey("AlternativeNameLabel"))
-                            {
-                                alias.Add(binding["AlternativeNameLabel"].value);
-                            }
-                            if (binding.ContainsKey("foundingDate"))
-                            {
-                                fundacion.Add(DateTime.Parse(binding["foundingDate"].value));
-                            }
-                            if (binding.ContainsKey("awardLabel"))
-                            {
-                                awards.Add(binding["awardLabel"].value);
-                            }
-
-
-                        }
-
-                    }
-                }
-            }
-
-
-        }
-
-        public static Dictionary<string, Dictionary<string, object>> LeerClub2(int limit = 3000, int offset = 0)
-        {
+            string clubwikiid = "wd:" + clubwikiid2.Split("/").Last();
             var clubsDictionary = new Dictionary<string, Dictionary<string, object>>();
 
             // Definir la consulta SPARQL
-            String select2 = $@"SELECT ?club ?clubLabel 
+            String select2 = $@"SELECT  ?clubLabel 
        (GROUP_CONCAT(DISTINCT ?name; separator="", "") AS ?alternativeNames)
        (GROUP_CONCAT(DISTINCT ?foundingDate; separator="", "") AS ?foundingDates)
        (GROUP_CONCAT(DISTINCT ?awardLabel; separator="", "") AS ?awards)
        ?logo ?logoLabel ?stadiumLabel ?postalCodeLabel ?streetLabel ?cityLabel ?countryLabel ?wikipediaArticle ?apodo ";
             String where2 = $@"WHERE {{
   
-  ?club wdt:P31 wd:Q476028.
-  ?club wdt:P154 ?logo.
-  ?club skos:altLabel ?AlternativeNameLabel.
+  {clubwikiid} wdt:P31 wd:Q476028.
+    {clubwikiid} rdfs:label ?clubLabel.
+  {clubwikiid} wdt:P154 ?logo.
+  {clubwikiid} skos:altLabel ?AlternativeNameLabel.
   FILTER(LANG(?AlternativeNameLabel) = ""en"")
   BIND (?AlternativeNameLabel AS ?name)
   
@@ -524,20 +429,20 @@ LIMIT 1
    
   
   
-  OPTIONAL {{ ?club wdt:P571 ?foundingDate. }}
+  OPTIONAL {{ {clubwikiid} wdt:P571 ?foundingDate. }}
 
   
   
     
  OPTIONAL {{   
-   ?club wdt:P1449 ?Apodo.
+   {clubwikiid} wdt:P1449 ?Apodo.
    
    BIND (?ApodoLabel AS ?name)
   }}
    
   
   OPTIONAL {{
-    ?club wdt:P166 ?award.
+    {clubwikiid} wdt:P166 ?award.
     ?award rdfs:label ?awardLabel.
     FILTER(LANG(?awardLabel) = ""en"")
     
@@ -545,7 +450,7 @@ LIMIT 1
 
   
   OPTIONAL {{
-    ?club wdt:P115 ?stadium.
+    {clubwikiid} wdt:P115 ?stadium.
     OPTIONAL {{ ?stadium wdt:P281 ?postalCode. }}
     OPTIONAL {{ ?stadium wdt:P669 ?street. }}
     OPTIONAL {{ ?stadium wdt:P131 ?city. }}
@@ -554,7 +459,7 @@ LIMIT 1
 
   
   OPTIONAL {{
-    ?wikipediaArticle schema:about ?club;
+    ?wikipediaArticle schema:about {clubwikiid};
                       schema:isPartOf <https://en.wikipedia.org/>.
   }}
 
@@ -562,20 +467,27 @@ LIMIT 1
   SERVICE wikibase:label {{ bd:serviceParam wikibase:language ""en"". }}
 
 }}
-GROUP BY ?club ?clubLabel ?logo ?logoLabel ?stadiumLabel ?postalCodeLabel ?streetLabel ?cityLabel ?countryLabel ?wikipediaArticle ?apodo
+GROUP BY  ?clubLabel ?logo ?logoLabel ?stadiumLabel ?postalCodeLabel ?streetLabel ?cityLabel ?countryLabel ?wikipediaArticle ?apodo
 LIMIT {limit} OFFSET {offset}
 ";
 
             // Ejecutar la consulta SPARQL
             SparqlObject datos = ServiceWIKIDATA.Jsonget(select2, where2);
 
+            string clubName="";
+
+
             // Procesar los resultados
             if (datos.results != null && datos.results.bindings != null && datos.results.bindings.Count > 0)
             {
                 foreach (var binding in datos.results.bindings)
                 {
+                    if((clubName!= "")&&(binding.ContainsKey("clubLabel")))
+                    {
+                        clubName = binding["clubLabel"].value;
+                    }
                     // Obtener el nombre del club
-                    string clubName = binding.ContainsKey("clubLabel") ? binding["clubLabel"].value : "N/A";
+                    
 
                     // Si el club no está en el diccionario, lo añadimos
                     if (!clubsDictionary.ContainsKey(clubName))
@@ -633,31 +545,242 @@ LIMIT {limit} OFFSET {offset}
 
 
 
-        public static Dictionary<string, Dictionary<string, object>> LeerClub3(int limit = 3000, int offset = 0)
+        public static void LeerClub(string nombre, out string descripcion, out string logo, out string cp, out string calle, out string ciudad, out string pais, out List<DateTime> fundacion, out List<string> awards, out List<string> alias)
         {
-            var clubsDictionary = new Dictionary<string, Dictionary<string, object>>();
-
+            string clubwikiid2 = ObtenerClubWIKIIDPorNombre(nombre);
+            if (clubwikiid2 == null)
+            {
+                clubwikiid2 = "https://www.wikidata.org/wiki/Q42267";
+            }
+            string clubwikiid = "wd:" + clubwikiid2.Split("/").Last();
+            descripcion = "N/A";
+            logo = "N/A";
+            cp = "";
+            calle = "";
+            ciudad = "";
+            pais = "";
+            fundacion = new List<DateTime>();
+            awards = new List<string>();
+            alias = new List<string>();
             // Definir la consulta SPARQL
-            String select2 = $@"";
-            String where2 = $@"";
-            SparqlObject datos = ServiceWIKIDATA.Jsonget(select2, where2);
+            String select2 = $@" SELECT ?club ?clubLabel ?alternativeName ?AlternativeNameLabel ?logo ?logoLabel ?foundingDate ?award ?awardLabel ?stadiumLabel ?postalCodeLabel ?streetLabel ?cityLabel ?countryLabel ?wikipediaArticleLabel";
+            String where2 = $@"WHERE {{
+    {clubwikiid} wdt:P31 wd:Q476028;
+               
 
-            // Procesar los resultados
+
+        skos:altLabel ?alternativeName.
+         
+  
+    
+     {clubwikiid} rdfs:label ?clubLabel.
+   FILTER(LANG(?clubLabel) = ""es"").
+        
+
+   
+    
+    OPTIONAL {{ {clubwikiid} wdt:P154 ?logo. }} 
+    OPTIONAL {{ {clubwikiid} wdt:P571 ?foundingDate. }} 
+    OPTIONAL {{ 
+        {clubwikiid} wdt:P166 ?award.
+        ?award rdfs:label ?awardLabel FILTER(LANG(?awardLabel) = ""es"").  
+    }}
+    OPTIONAL {{ 
+        {clubwikiid} wdt:P115 ?stadium.  
+        OPTIONAL {{ ?stadium wdt:P281 ?postalCode. }}  
+        OPTIONAL {{ ?stadium wdt:P669 ?street. }} 
+        OPTIONAL {{ ?stadium wdt:P131 ?city. }}  
+        OPTIONAL {{ ?stadium wdt:P17 ?country. }}  
+    }}
+   
+    OPTIONAL {{
+        ?wikipediaArticle schema:about {clubwikiid};
+                          schema:isPartOf <https://en.wikipedia.org/>. 
+    }}
+
+    SERVICE wikibase:label {{ 
+        bd:serviceParam wikibase:language ""[AUTO_LANGUAGE],en"".  
+    }}
+}}
+LIMIT 1
+";
+
+            SparqlObject datos = new SparqlObject();
+
+            datos = ServiceWIKIDATA.Jsonget(select2, where2);
+            List<string> lista = new List<string>();
+
             if (datos.results != null && datos.results.bindings != null && datos.results.bindings.Count > 0)
             {
                 foreach (var binding in datos.results.bindings)
                 {
+
+
+                    if (binding.ContainsKey("logoLabel"))
+                    {
+                        logo = binding["logoLabel"].value;
+                    }
+                    if (binding.ContainsKey("streetlabel"))
+                    {
+                        calle = binding["streetLabel"].value;
+                    }
+                    if (binding.ContainsKey("postalCodeLabel"))
+                    {
+                        cp = binding["postalCodeLabel"].value;
+                    }
+                    if (binding.ContainsKey("cityLabel"))
+                    {
+                        ciudad = binding["cityLabel"].value;
+                    }
+
+                    if (binding.ContainsKey("countryLabel"))
+                    {
+                        pais = binding["countryLabel"].value;
+                    }
+                    if (binding.ContainsKey("wikipediaArticleLabel"))
+                    {
+                        descripcion = binding["wikipediaArticleLabel"].value;
+                    }
+                    if (binding.ContainsKey("AlternativeNameLabel"))
+                    {
+                        alias.Add(binding["AlternativeNameLabel"].value);
+                    }
+                    if (binding.ContainsKey("foundingDate"))
+                    {
+                        fundacion.Add(DateTime.Parse(binding["foundingDate"].value));
+                    }
+                    if (binding.ContainsKey("awardLabel"))
+                    {
+                        awards.Add(binding["awardLabel"].value);
+                    }
+
+
+
+
+
                 }
             }
 
 
+        }
 
 
-                    return clubsDictionary;
+
+
+        public static void LeerClubCompleto(string nombre, out string descripcion, out string logo, out string cp, out string calle, out string ciudad, out string pais, out List<DateTime> fundacion, out List<string> awards, out List<string> alias)
+        {
+            string clubwikiid2 = ObtenerClubWIKIIDPorNombre(nombre);
+            string clubwikiid = "wd:" + clubwikiid2.Split("/").Last();
+            descripcion = "N/A";
+            logo = "N/A";
+            cp = "";
+            calle = "";
+            ciudad = "";
+            pais = "";
+            fundacion = new List<DateTime>();
+            awards = new List<string>();
+            alias = new List<string>();
+            // Definir la consulta SPARQL
+            String select2 = $@" SELECT ?club ?clubLabel ?alternativeName ?AlternativeNameLabel ?logo ?logoLabel ?foundingDate ?award ?awardLabel ?stadiumLabel ?postalCodeLabel ?streetLabel ?cityLabel ?countryLabel ?wikipediaArticleLabel";
+            String where2 = $@"WHERE {{
+    {clubwikiid} wdt:P31 wd:Q476028;
+               
+
+
+        skos:altLabel ?alternativeName.
+         
+  
+    
+     {clubwikiid} rdfs:label ?clubLabel.
+   FILTER(LANG(?clubLabel) = ""es"").
+        
+
+   
+    
+    OPTIONAL {{ {clubwikiid} wdt:P154 ?logo. }} 
+    OPTIONAL {{ {clubwikiid} wdt:P571 ?foundingDate. }} 
+    OPTIONAL {{ 
+        {clubwikiid} wdt:P166 ?award.
+        ?award rdfs:label ?awardLabel FILTER(LANG(?awardLabel) = ""es"").  
+    }}
+    OPTIONAL {{ 
+        {clubwikiid} wdt:P115 ?stadium.  
+        OPTIONAL {{ ?stadium wdt:P281 ?postalCode. }}  
+        OPTIONAL {{ ?stadium wdt:P669 ?street. }} 
+        OPTIONAL {{ ?stadium wdt:P131 ?city. }}  
+        OPTIONAL {{ ?stadium wdt:P17 ?country. }}  
+    }}
+   
+    OPTIONAL {{
+        ?wikipediaArticle schema:about {clubwikiid};
+                          schema:isPartOf <https://en.wikipedia.org/>. 
+    }}
+
+    SERVICE wikibase:label {{ 
+        bd:serviceParam wikibase:language ""[AUTO_LANGUAGE],en"".  
+    }}
+}}
+LIMIT 1
+";
+
+            SparqlObject datos = new SparqlObject();
+
+            datos = ServiceWIKIDATA.Jsonget(select2, where2);
+            List<string> lista = new List<string>();
+
+            if (datos.results != null && datos.results.bindings != null && datos.results.bindings.Count > 0)
+            {
+                foreach (var binding in datos.results.bindings)
+                {
+
+
+                    if (binding.ContainsKey("logoLabel"))
+                    {
+                        logo = binding["logoLabel"].value;
+                    }
+                    if (binding.ContainsKey("streetlabel"))
+                    {
+                        calle = binding["streetLabel"].value;
+                    }
+                    if (binding.ContainsKey("postalCodeLabel"))
+                    {
+                        cp = binding["postalCodeLabel"].value;
+                    }
+                    if (binding.ContainsKey("cityLabel"))
+                    {
+                        ciudad = binding["cityLabel"].value;
+                    }
+
+                    if (binding.ContainsKey("countryLabel"))
+                    {
+                        pais = binding["countryLabel"].value;
+                    }
+                    if (binding.ContainsKey("wikipediaArticleLabel"))
+                    {
+                        descripcion = binding["wikipediaArticleLabel"].value;
+                    }
+                    if (binding.ContainsKey("AlternativeNameLabel"))
+                    {
+                        alias.Add(binding["AlternativeNameLabel"].value);
+                    }
+                    if (binding.ContainsKey("foundingDate"))
+                    {
+                        fundacion.Add(DateTime.Parse(binding["foundingDate"].value));
+                    }
+                    if (binding.ContainsKey("awardLabel"))
+                    {
+                        awards.Add(binding["awardLabel"].value);
+                    }
+
+
+
+
+
+                }
+            }
 
 
         }
-
 
         public static Dictionary<string, List<DateTime>> LeerFechasFundacionClub(int limit = 3000, int offset = 0)
         {

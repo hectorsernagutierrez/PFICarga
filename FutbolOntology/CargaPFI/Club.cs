@@ -56,14 +56,14 @@ namespace FutbolOntology.CargaPFI
             // Dictionary<string, Dictionary<string, object>> diccionarioGrande = ServiceWIKIDATA.LeerClub2(3000, 0);
             // Dictionary<string, object> diccionariopeque = new Dictionary<string, object>();
 
-            var nombresAlternativosDiccionario = ServiceWIKIDATA.ObtenerTodasLosNombresAlternativos();
-            var logotiposDiccionario = ServiceWIKIDATA.LeerLogotiposClub();
+            //var nombresAlternativosDiccionario = ServiceWIKIDATA.ObtenerTodasLosNombresAlternativos();
+            //var logotiposDiccionario = ServiceWIKIDATA.LeerLogotiposClub();
             var entrenadoresDiccionario = ServiceWIKIDATA.ObtenerEntrenadoresPorClub(10000, 0);
-            var premiosDiccionario = ServiceWIKIDATA.ObtenerTodosLosPremios();
-            var direccionesPostalesDiccionario = ServiceWIKIDATA.ObtenerTodasLasDireccionesPostales();
-            var wikipediaDiccionario = ServiceWIKIDATA.ObtenerTodosLosArticulosWikipedia();
-            var fundacionDiccionario = ServiceWIKIDATA.ObtenerFechasFundacionMasAntiguas();
-            // Obtener la ruta base de la aplicación
+            //var premiosDiccionario = ServiceWIKIDATA.ObtenerTodosLosPremios();
+            //var direccionesPostalesDiccionario = ServiceWIKIDATA.ObtenerTodasLasDireccionesPostales();
+            //var wikipediaDiccionario = ServiceWIKIDATA.ObtenerTodosLosArticulosWikipedia();
+            //var fundacionDiccionario = ServiceWIKIDATA.ObtenerFechasFundacionMasAntiguas();
+            //// Obtener la ruta base de la aplicación
 
 
             Random rnd = new Random();
@@ -103,83 +103,96 @@ namespace FutbolOntology.CargaPFI
                         sportsClub.Schema_identifier = club.ClubId;
                         sportsClub.Schema_name = club.Name;
                         Dictionary<string, List<DateTime>> listaEntr = new Dictionary<string, List<DateTime>>();
+                        ServiceWIKIDATA.LeerClub(club.Name, out string descrip, out string logo, out string cp, out string calle, out string ciudad, out string pais, out List<DateTime> fundacion1, out List<string> prem, out List<string> nomalt);
+                        sportsClub.Schema_alternateName = nomalt;
+                        sportsClub.Schema_description=descrip;
+                        sportsClub.Schema_award = prem;
+                        ClubpfihsOntology.PostalAddress loc = new ClubpfihsOntology.PostalAddress();
+                        loc.Schema_PostalCode = cp;
+                        loc.Schema_streetAddress = calle;
+                        loc.Schema_addressLocality = ciudad;
+                        loc.Schema_addressCountry = pais;
+                        sportsClub.Schema_location = new List<ClubpfihsOntology.PostalAddress>();
+                        sportsClub.Schema_logo = logo;
+                        sportsClub.Schema_location.Add(loc);    
+                        sportsClub.Schema_foundingDate = fundacion1.First();    
 
-                        string nombreBuscado = club.Name;
+                        //string nombreBuscado = club.Name;
 
 
-                        string clubClave = null;
+                        //string clubClave = null;
 
-                        // Primero buscar en nombres de clubes principales
-                        if (nombresAlternativosDiccionario.ContainsKey(nombreBuscado))
-                        {
-                            clubClave = nombreBuscado;
-                        }
-                        else
-                        {
-                            // Si no está como nombre principal, buscar en los nombres alternativos
-                            foreach (var entry in nombresAlternativosDiccionario)
+                        //// Primero buscar en nombres de clubes principales
+                        //if (nombresAlternativosDiccionario.ContainsKey(nombreBuscado.ToLower()))
+                        //{
+                        //    clubClave = nombreBuscado;
+                        //}
+                        //else
+                        //{
+                        //    // Si no está como nombre principal, buscar en los nombres alternativos
+                        //    foreach (var entry in nombresAlternativosDiccionario)
+                        //    {
+                        //        if (entry.Value.Contains(nombreBuscado))
+                        //        {
+                        //            clubClave = entry.Key;
+                        //            break;
+                        //        }
+                        //    }
+                        //}
+
+
+
+
+                        //List<string> prem;
+                        //List<string> nomalt;
+                        //List<ClubpfihsOntology.PostalAddress> loc;
+                        //string logo;
+                        //string descrip;
+                        //DateTime fundacion;
+
+                        //// Si no encontramos el club, devolver null
+                        //if (clubClave != null)
+                        //{
+                        //    Console.WriteLine($"Se encontró ningún club exacto con el nombre {nombreBuscado}");
+                        //    clubClave = nombreBuscado;
+                        //    sportsClub.Schema_alternateName = nombresAlternativosDiccionario.ContainsKey(clubClave) ? nombresAlternativosDiccionario[clubClave] : new List<string>();
+                        //    sportsClub.Schema_award = premiosDiccionario.ContainsKey(clubClave) ? premiosDiccionario[clubClave] : new List<string>();
+                        //    sportsClub.Schema_location = direccionesPostalesDiccionario.ContainsKey(clubClave) ? direccionesPostalesDiccionario[clubClave] : new List<ClubpfihsOntology.PostalAddress>();
+                        //    sportsClub.Schema_logo = logotiposDiccionario.ContainsKey(clubClave) ? logotiposDiccionario[clubClave] : null;
+                        //    sportsClub.Schema_description = wikipediaDiccionario.ContainsKey(clubClave) ? wikipediaDiccionario[clubClave] : null;
+                        //    sportsClub.Schema_foundingDate = fundacionDiccionario.ContainsKey(clubClave) ? (DateTime?)fundacionDiccionario[clubClave] : null;
+
+
+                        //   // prem = DiccionarioSimilar<List<string>>.ObtenerIgualOSimilar(premiosDiccionario, clubClave);
+                        //   // nomalt = DiccionarioSimilar<List<string>>.ObtenerIgualOSimilar(nombresAlternativosDiccionario, clubClave);
+                        //   //  loc= DiccionarioSimilar<List<ClubpfihsOntology.PostalAddress>>.ObtenerIgualOSimilar(direccionesPostalesDiccionario, clubClave);
+                        //   // logo = DiccionarioSimilar<string>.ObtenerIgualOSimilar(logotiposDiccionario, clubClave);
+                        //   //descrip  = DiccionarioSimilar<string>.ObtenerIgualOSimilar(wikipediaDiccionario, clubClave);
+                        //   // fundacion = DiccionarioSimilar<DateTime>.ObtenerIgualOSimilar(fundacionDiccionario, clubClave);
+
+
+                        //}
+                        //else
+                        //{
+                        //    Console.WriteLine($"NO se encontró ningún club exacto con el nombre {nombreBuscado}");
+                        //    //ServiceWIKIDATA.LeerClub(nombreBuscado, out descrip, out logo, out string cp, out string calle, out string ciudad, out string pais, out List<DateTime> fundacion1, out prem, out nomalt);
+                        //    //fundacion = fundacion1.First();
+                        //    //loc = new List<ClubpfihsOntology.PostalAddress>();
+                        //    //loc.Add(new ClubpfihsOntology.PostalAddress() { Schema_PostalCode = cp , Schema_streetAddress=calle,Schema_addressLocality=ciudad,Schema_addressCountry=pais});
+
+                        //    //sportsClub.Schema_alternateName = nomalt;
+                        //    //sportsClub.Schema_award = prem;
+                        //    //sportsClub.Schema_location = loc;
+                        //    sportsClub.Schema_logo = Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase, @"Documents/Logo.png");
+                        //    //sportsClub.Schema_description = descrip;
+                        //    //sportsClub.Schema_foundingDate = fundacion;
+                        //    clubClave = club.Name;
+
+                        //}
+
+                        if (entrenadoresDiccionario.ContainsKey(club.ClubId))
                             {
-                                if (entry.Value.Contains(nombreBuscado))
-                                {
-                                    clubClave = entry.Key;
-                                    break;
-                                }
-                            }
-                        }
-
-
-
-
-                        List<string> prem;
-                        List<string> nomalt;
-                        List<ClubpfihsOntology.PostalAddress> loc;
-                        string logo;
-                        string descrip;
-                        DateTime fundacion;
-
-                        // Si no encontramos el club, devolver null
-                        if (clubClave != null)
-                        {
-                            Console.WriteLine($"Se encontró ningún club exacto con el nombre {nombreBuscado}");
-                            clubClave = nombreBuscado;
-                            sportsClub.Schema_alternateName = nombresAlternativosDiccionario.ContainsKey(clubClave) ? nombresAlternativosDiccionario[clubClave] : new List<string>();
-                            sportsClub.Schema_award = premiosDiccionario.ContainsKey(clubClave) ? premiosDiccionario[clubClave] : new List<string>();
-                            sportsClub.Schema_location = direccionesPostalesDiccionario.ContainsKey(clubClave) ? direccionesPostalesDiccionario[clubClave] : new List<ClubpfihsOntology.PostalAddress>();
-                            sportsClub.Schema_logo = logotiposDiccionario.ContainsKey(clubClave) ? logotiposDiccionario[clubClave] : null;
-                            sportsClub.Schema_description = wikipediaDiccionario.ContainsKey(clubClave) ? wikipediaDiccionario[clubClave] : null;
-                            sportsClub.Schema_foundingDate = fundacionDiccionario.ContainsKey(clubClave) ? (DateTime?)fundacionDiccionario[clubClave] : null;
-
-
-                           // prem = DiccionarioSimilar<List<string>>.ObtenerIgualOSimilar(premiosDiccionario, clubClave);
-                           // nomalt = DiccionarioSimilar<List<string>>.ObtenerIgualOSimilar(nombresAlternativosDiccionario, clubClave);
-                           //  loc= DiccionarioSimilar<List<ClubpfihsOntology.PostalAddress>>.ObtenerIgualOSimilar(direccionesPostalesDiccionario, clubClave);
-                           // logo = DiccionarioSimilar<string>.ObtenerIgualOSimilar(logotiposDiccionario, clubClave);
-                           //descrip  = DiccionarioSimilar<string>.ObtenerIgualOSimilar(wikipediaDiccionario, clubClave);
-                           // fundacion = DiccionarioSimilar<DateTime>.ObtenerIgualOSimilar(fundacionDiccionario, clubClave);
-                        
-                        
-                        }
-                        else
-                        {
-                            Console.WriteLine($"NO se encontró ningún club exacto con el nombre {nombreBuscado}");
-                            //ServiceWIKIDATA.LeerClub(nombreBuscado, out descrip, out logo, out string cp, out string calle, out string ciudad, out string pais, out List<DateTime> fundacion1, out prem, out nomalt);
-                            //fundacion = fundacion1.First();
-                            //loc = new List<ClubpfihsOntology.PostalAddress>();
-                            //loc.Add(new ClubpfihsOntology.PostalAddress() { Schema_PostalCode = cp , Schema_streetAddress=calle,Schema_addressLocality=ciudad,Schema_addressCountry=pais});
-
-                            //sportsClub.Schema_alternateName = nomalt;
-                            //sportsClub.Schema_award = prem;
-                            //sportsClub.Schema_location = loc;
-                            sportsClub.Schema_logo = Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase, @"Documents/Logo.png");
-                            //sportsClub.Schema_description = descrip;
-                            //sportsClub.Schema_foundingDate = fundacion;
-                            clubClave = club.Name;
-
-                        }
-                           
-                            if (entrenadoresDiccionario.ContainsKey(clubClave))
-                            {
-                                listaEntr = (Dictionary<string, List<DateTime>>)entrenadoresDiccionario[clubClave];
+                                listaEntr = (Dictionary<string, List<DateTime>>)entrenadoresDiccionario[club.ClubId];
                             }
                             else
                             {

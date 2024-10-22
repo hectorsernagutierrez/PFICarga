@@ -226,8 +226,11 @@ FutbolOntology.CargaPFI.Club c = new FutbolOntology.CargaPFI.Club(mResourceApi);
 //{
 //    Console.WriteLine(s);
 //}
-
-//c.CargarTodosClub(clubsESFilePath, appearancesESITFilePath, playerValuationsFilePath);
+c.CargarTodosClub(clubsESFilePath, appearancesESITFilePath, playerValuationsFilePath);
 c.CargarTodosClub(clubsITFilePath, appearancesESITFile, playerValuationsFilePath);
 
+//ServiceWIKIDATA.LeerClub("FC Barcelona", out string descr, out string logo, out string cp, out string calle, out string ciudad, out string pais, out List<DateTime> lfund, out List<string> prem, out List<string> alias);
+//Console.WriteLine(descr);
+//Dictionary<string, Dictionary<string, object>> dic = ServiceWIKIDATA.LeerClub2("FC Barcelona", 3000, 0);
+//Console.WriteLine("descr");
 #endregion cargar clubs
