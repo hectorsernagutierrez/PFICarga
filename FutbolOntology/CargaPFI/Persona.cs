@@ -34,8 +34,13 @@ namespace FutbolOntology.CargaPFI
             {
                 this.apiRecursos = api;
             }
-
-        public async void CargarPersona(string rutaDirectorioPersona, string rutaDirectorioPersonaValoracion , string rutaDirectorioConsulta)
+		/// <summary>
+		/// Cargo las personas en la ontología
+		/// </summary>
+		/// <param name="rutaDirectorioPersona"></param>
+		/// <param name="rutaDirectorioPersonaValoracion"></param>
+		/// <param name="rutaDirectorioConsulta"></param>
+		public async void CargarPersona(string rutaDirectorioPersona, string rutaDirectorioPersonaValoracion , string rutaDirectorioConsulta)
         {
             var service = new DTOService();
             List<PlayersDTO> players = service.ReadPlayers(rutaDirectorioPersona);
@@ -75,7 +80,15 @@ namespace FutbolOntology.CargaPFI
            
          }
 
-        public string CargarPersonaSola(PlayersDTO player, List<PlayerValuationsDTO> playerValuations,string descr, List<string> award)
+		/// <summary>
+		/// Carga de un solo jugador en la ontología
+		/// </summary>
+		/// <param name="player"></param>
+		/// <param name="playerValuations"></param>
+		/// <param name="descr"></param>
+		/// <param name="award"></param>
+		/// <returns></returns>
+		public string CargarPersonaSola(PlayersDTO player, List<PlayerValuationsDTO> playerValuations,string descr, List<string> award)
         {
             Person persona = new Person();
             persona.Schema_identifier = player.PlayerId;

@@ -10,8 +10,13 @@ namespace FutbolOntology.CargaPFI
 
     public class DiccionarioSimilar<T>
     {
-        // Método genérico para obtener el valor exacto o similar
-        public static T ObtenerIgualOSimilar(Dictionary<string, T> diccionario, string clave)
+		/// <summary>
+		///   Método genérico para obtener el valor exacto o similar de una clave en un diccionario por mayor aproximación.
+		/// </summary>
+		/// <param name="diccionario"></param>
+		/// <param name="clave"></param>
+		/// <returns></returns>
+		public static T ObtenerIgualOSimilar(Dictionary<string, T> diccionario, string clave)
         {
             // Si hay coincidencia exacta
             if (diccionario.ContainsKey(clave))

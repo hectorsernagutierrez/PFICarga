@@ -25,8 +25,14 @@ namespace FutbolOntology.SPARQL
     public class ServiceWIKIDATA
     {
 
-
-        public static SparqlObject Jsonget(string select2, string where2)
+		/// <summary>
+		/// Obtención deel json de la consulta SPARQL sacada de wikidata.
+		/// </summary>
+		/// <param name="select2">seleect de la consulta sparl a wikidata</param>
+		/// <param name="where2">where dee la consulta sparql a wikidata</param>
+		/// <returns>SparqlObject con el json de la respuesta a la consulta</returns>
+		/// <exception cref="Exception"></exception>
+		public static SparqlObject Jsonget(string select2, string where2)
         {
 
 
@@ -98,7 +104,13 @@ namespace FutbolOntology.SPARQL
         }
 
 
-        public static List<string> LeerJugador(string nombre, out string descripcion)
+		/// <summary>
+		/// Leer la infromación de un jugador desde Wikidata
+		/// </summary>
+		/// <param name="nombre"></param>
+		/// <param name="descripcion"></param>
+		/// <returns></returns>
+		public static List<string> LeerJugador(string nombre, string id, out string descripcion)
         {
             // Definir la consulta SPARQL
             String select2 = $@"SELECT ?player ?playerLabel ?wikipediaArticle ?award ?awardLabel";
@@ -152,8 +164,13 @@ namespace FutbolOntology.SPARQL
 
 
 
-
-        public static void LeerEntrenador(string nombreClub, out Dictionary<string, List<DateTime>> temporadaEntrenador)
+		/// <summary>
+		/// Leer de wikidata la información de un entrenador
+		/// </summary>
+		/// <param name="nombreClub"></param>
+		/// <param name="id"></param>
+		/// <param name="temporadaEntrenador"></param>
+		public static void LeerEntrenador(string nombreClub,string id, out Dictionary<string, List<DateTime>> temporadaEntrenador)
         {
             temporadaEntrenador = new Dictionary<string, List<DateTime>>();
             // Definir la consulta SPARQL
@@ -210,8 +227,13 @@ LIMIT 100";
 
         }
 
-
-        public static Dictionary<string, Dictionary<string, List<DateTime>>> ObtenerEntrenadoresPorClub(int limit = 5000, int offset = 0)
+		/// <summary>
+		/// Sacar entrenadores de cada club
+		/// </summary>
+		/// <param name="limit"></param>
+		/// <param name="offset"></param>
+		/// <returns></returns>
+		public static Dictionary<string, Dictionary<string, List<DateTime>>> ObtenerEntrenadoresPorClub(int limit = 5000, int offset = 0)
         {
             var clubsDictionary = new Dictionary<string, Dictionary<string, List<DateTime>>>();
             bool hayMasResultados = true;
@@ -305,8 +327,13 @@ LIMIT 100";
 
 
 
-
-        public static void LeerWikiDatasJugadores(int offset,out Dictionary<string, string> d, Dictionary<string, string> daux)
+		/// <summary>
+		///  Sacar dee wikidata información de los jugadores.
+		/// </summary>
+		/// <param name="offset"></param>
+		/// <param name="d"></param>
+		/// <param name="daux"></param>
+		public static void LeerWikiDatasJugadores(int offset,out Dictionary<string, string> d, Dictionary<string, string> daux)
         {
             d = daux;
             // Consulta SPARQL con OFFSET actualizado
@@ -352,7 +379,12 @@ LIMIT 100";
 
 
 
-
+        /// <summary>
+        /// Lee todos los premios desde wikidata
+        /// </summary>
+        /// <param name="offset"></param>
+        /// <param name="d"></param>
+        /// <param name="daux"></param>
         public static void LeerAwards(int offset,out Dictionary<string, List<string>> d, Dictionary<string, List<string>> daux)
         {
             d = daux;
@@ -403,9 +435,10 @@ OFFSET {offset}";
             }
         }
 
-        public static Dictionary<string, Dictionary<string, object>> LeerClub2(string nombre,int limit = 3000, int offset = 0)
+
+        public static Dictionary<string, Dictionary<string, object>> LeerClub2(string IDClub,int limit = 3000, int offset = 0)
         {
-            string clubwikiid2 = ObtenerClubWIKIIDPorNombre(nombre);
+            string clubwikiid2 = ObtenerClubWIKIIDPorTransferID(IDClub);
             string clubwikiid = "wd:" + clubwikiid2.Split("/").Last();
             var clubsDictionary = new Dictionary<string, Dictionary<string, object>>();
 
@@ -545,9 +578,9 @@ LIMIT {limit} OFFSET {offset}
 
 
 
-        public static void LeerClub(string nombre, out string descripcion, out string logo, out string cp, out string calle, out string ciudad, out string pais, out List<DateTime> fundacion, out List<string> awards, out List<string> alias)
+        public static void LeerClub(string IDClub, out string descripcion, out string logo, out string cp, out string calle, out string ciudad, out string pais, out List<DateTime> fundacion, out List<string> awards, out List<string> alias)
         {
-            string clubwikiid2 = ObtenerClubWIKIIDPorNombre(nombre);
+            string clubwikiid2 = ObtenerClubWIKIIDPorTransferID(IDClub);
             if (clubwikiid2 == null)
             {
                 clubwikiid2 = "https://www.wikidata.org/wiki/Q42267";
@@ -667,9 +700,9 @@ LIMIT 1
 
 
 
-        public static void LeerClubCompleto(string nombre, out string descripcion, out string logo, out string cp, out string calle, out string ciudad, out string pais, out List<DateTime> fundacion, out List<string> awards, out List<string> alias)
+        public static void LeerClubCompleto(string IDClub, out string descripcion, out string logo, out string cp, out string calle, out string ciudad, out string pais, out List<DateTime> fundacion, out List<string> awards, out List<string> alias)
         {
-            string clubwikiid2 = ObtenerClubWIKIIDPorNombre(nombre);
+            string clubwikiid2 = ObtenerClubWIKIIDPorTransferID(IDClub);
             string clubwikiid = "wd:" + clubwikiid2.Split("/").Last();
             descripcion = "N/A";
             logo = "N/A";
@@ -1483,34 +1516,22 @@ LIMIT {limit} OFFSET {offset}";
             }
         }
 
-        public static string ObtenerClubWIKIIDPorNombre(string nombreClub)
+		/// <summary>
+		/// Obtencion de wikidata id de un club por su transfermarkt id
+		/// </summary>
+		/// <param name="IDClub"></param>
+		/// <returns></returns>
+		public static string ObtenerClubWIKIIDPorTransferID(string IDClub)
         {
             // Definir la consulta SPARQL
             string select = $@"
-    SELECT ?club ";
+     SELECT ?club  ";
 
             string where = $@"WHERE {{
-    ?club wdt:P31 wd:Q476028;  # Club is an instance of a football club
-          rdfs:label ?clubLabel.
+    ?club wdt:P7223 {IDClub}.  
 
-    # Normalize clubLabel and input: remove accents, commas, periods, and spaces
-    BIND(LCASE(REPLACE(REPLACE(REPLACE(REPLACE(?clubLabel, ""[ÁÉÍÓÚáéíóú]"", ""a""), ""[,\\.]"", """"), ""\\s"", """"), ""-"", """")) AS ?clubNormalizedLabel)
-    BIND(LCASE(REPLACE(REPLACE(REPLACE(REPLACE('{nombreClub}', ""[ÁÉÍÓÚáéíóú]"", ""a""), ""[,\\.]"", """"), ""\\s"", """"), ""-"", """")) AS ?inputNormalized)
-
-    # Ensure the input string contains the normalized main club label
-    FILTER(CONTAINS(?inputNormalized, ?clubNormalizedLabel))
-
-    # Mandatory: Club must have skos:altLabel
-    ?club skos:altLabel ?alternativeName.
-    FILTER(LANG(?alternativeName) IN (""en"", ""es""))
-
-    # Normalize skos:altLabel values (alternative names)
-    BIND(LCASE(REPLACE(REPLACE(REPLACE(REPLACE(?alternativeName, ""[ÁÉÍÓÚáéíóú]"", ""a""), ""[,\\.]"", """"), ""\\s"", """"), ""-"", """")) AS ?alternativeNormalizedLabel)
-
-    # Ensure the input string contains the normalized alternative name
-    FILTER(CONTAINS(?inputNormalized, ?alternativeNormalizedLabel))
 }}
-LIMIT 1 ";
+LIMIT 1";
 
             // Ejecutar la consulta SPARQL
             SparqlObject datos = ServiceWIKIDATA.Jsonget(select, where);
@@ -1531,6 +1552,59 @@ LIMIT 1 ";
         }
 
 
+        /// <summary>
+        /// Uso de similarity score para la obteencion del identificador de wikidata de un club
+        /// </summary>
+        /// <param name="nombreClub"></param>
+        /// <returns></returns>
+//		public static string ObtenerClubWIKIIDPorNombre(string nombreClub)
+//		{
+//			// Definir la consulta SPARQL
+//			string select = $@"
+//    SELECT ?club ";
 
-    }
+//			string where = $@"WHERE {{
+//    ?club wdt:P31 wd:Q476028;  # Club is an instance of a football club
+//          rdfs:label ?clubLabel.
+
+//    # Normalize clubLabel and input: remove accents, commas, periods, and spaces
+//    BIND(LCASE(REPLACE(REPLACE(REPLACE(REPLACE(?clubLabel, ""[ÁÉÍÓÚáéíóú]"", ""a""), ""[,\\.]"", """"), ""\\s"", """"), ""-"", """")) AS ?clubNormalizedLabel)
+//    BIND(LCASE(REPLACE(REPLACE(REPLACE(REPLACE('{nombreClub}', ""[ÁÉÍÓÚáéíóú]"", ""a""), ""[,\\.]"", """"), ""\\s"", """"), ""-"", """")) AS ?inputNormalized)
+
+//    # Ensure the input string contains the normalized main club label
+//    FILTER(CONTAINS(?inputNormalized, ?clubNormalizedLabel))
+
+//    # Mandatory: Club must have skos:altLabel
+//    ?club skos:altLabel ?alternativeName.
+//    FILTER(LANG(?alternativeName) IN (""en"", ""es""))
+
+//    # Normalize skos:altLabel values (alternative names)
+//    BIND(LCASE(REPLACE(REPLACE(REPLACE(REPLACE(?alternativeName, ""[ÁÉÍÓÚáéíóú]"", ""a""), ""[,\\.]"", """"), ""\\s"", """"), ""-"", """")) AS ?alternativeNormalizedLabel)
+
+//    # Ensure the input string contains the normalized alternative name
+//    FILTER(CONTAINS(?inputNormalized, ?alternativeNormalizedLabel))
+//}}
+//LIMIT 1 ";
+
+//			// Ejecutar la consulta SPARQL
+//			SparqlObject datos = ServiceWIKIDATA.Jsonget(select, where);
+
+//			// Procesar los resultados
+//			if (datos.results != null && datos.results.bindings != null && datos.results.bindings.Count > 0)
+//			{
+//				// Obtener el URI del club
+//				var binding = datos.results.bindings[0];
+//				if (binding.ContainsKey("club"))
+//				{
+//					return binding["club"].value;
+//				}
+//			}
+
+//			// Retornar null si no se encuentra
+//			return null;
+//		}
+
+
+
+	}
 }

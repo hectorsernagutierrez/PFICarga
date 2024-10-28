@@ -46,8 +46,13 @@ namespace FutbolOntology.CargaPFI
             this.thelper = new Torneo(api);
              this.servicioDTO = new DTOService();
         }
-        
-        public void CargarTodosTorneos(string compePath, string rutaPartidos)
+
+		/// <summary>
+		/// Cargo todos los torneos que se encuentran en el archivo de competiciones
+		/// </summary>
+		/// <param name="compePath"></param>
+		/// <param name="rutaPartidos"></param>
+		public void CargarTodosTorneos(string compePath, string rutaPartidos)
         {
             
               List<CompetitionsDTO> TodasCompeticionesDTO =servicioDTO.ReadCompetitions(compePath);
@@ -62,8 +67,8 @@ namespace FutbolOntology.CargaPFI
                 organizersuris.Add(thelper.getOrganizerURl(competicion.Confederation));
                 torneo.IdsSchema_organizer = organizersuris;
 
-                Console.WriteLine("Empiezo a cargar temporadas de " + torneo.Schema_name + " " + torneo.Schema_identifier);
-                torneo.IdsEschema_subEvent = CargarTemporadas(torneo.Schema_identifier, 2018, 2024, rutaPartidos,torneo.Schema_name);
+                Console.WriteLine("Empiezo a cargar temporadas de " + torneo.Schema_name + " " + torneo.Schema_identifier);                
+                torneo.IDsEschema_subEvent = CargarTemporadas(torneo.Schema_identifier, 2018, 2024, rutaPartidos,torneo.Schema_name);
                 Console.WriteLine("Termino de cargar temporadas de " + torneo.Schema_name + " " + torneo.Schema_identifier);
                 Console.WriteLine("Subo  " + torneo.Schema_name + " " + torneo.Schema_identifier);
                 apiRecursos.ChangeOntology(ontologiaTorneo);
@@ -72,8 +77,17 @@ namespace FutbolOntology.CargaPFI
             }
         }
 
-
-        public List<string> CargarTemporadas(string compId, int TempInic, int TempFinal, string gamePath,string nombreTorneo)
+		/// <summary>
+		///  Carga todas las ediciones de un torneo.
+		/// Solo las comprendidas entre TempInic y TempFinal.
+		/// </summary>
+		/// <param name="compId"></param>
+		/// <param name="TempInic"></param>
+		/// <param name="TempFinal"></param>
+		/// <param name="gamePath"></param>
+		/// <param name="nombreTorneo"></param>
+		/// <returns></returns>
+		public List<string> CargarTemporadas(string compId, int TempInic, int TempFinal, string gamePath,string nombreTorneo)
         {
             
              List<string> urisEdicionesTorneos = new List<string>();        
@@ -114,7 +128,15 @@ namespace FutbolOntology.CargaPFI
             return urisEdicionesTorneos;
         }
 
-        public List<string> CargarPartidos(List<GamesDTO>  games, out List<string> uriParticipantes, out string uriWinner)
+
+		/// <summary>
+		/// Cargo todos los partidos de una edición de un torneo.
+		/// </summary>
+		/// <param name="games"></param>
+		/// <param name="uriParticipantes"></param>
+		/// <param name="uriWinner"></param>
+		/// <returns></returns>
+		public List<string> CargarPartidos(List<GamesDTO>  games, out List<string> uriParticipantes, out string uriWinner)
         {
             List<GameLineupsDTO> playeralineados = servicioDTO.ReadGameLineups(alineacionesPath);
             List<string> urisPartidos = new List<string>();
@@ -199,7 +221,13 @@ namespace FutbolOntology.CargaPFI
             return urisPartidos;
         }
 
-        public PartidopfihsOntology.SportsTeam IniciarTeams( string id,string clubName)
+		/// <summary>
+		/// Inicio las alineaciones de los equipos que participan een un partido
+		/// </summary>
+		/// <param name="id"></param>
+		/// <param name="clubName"></param>
+		/// <returns></returns>
+		public PartidopfihsOntology.SportsTeam IniciarTeams( string id,string clubName)
         {
 
             SparqlObject resultado = null;
@@ -249,7 +277,12 @@ namespace FutbolOntology.CargaPFI
 
         }
 
-        public List<PartidopfihsOntology.Event> cargarEventos( string gameIde)
+		/// <summary>
+		///  Cargo los eventos que acontecen en un partido de futbol
+		/// </summary>
+		/// <param name="gameIde"></param>
+		/// <returns></returns>
+		public List<PartidopfihsOntology.Event> cargarEventos( string gameIde)
         {
             List<PartidopfihsOntology.Event> listaEventos = new List<PartidopfihsOntology.Event>();
 
@@ -283,13 +316,18 @@ namespace FutbolOntology.CargaPFI
 
     }
 }
-
+/// <summary>
+/// DTOs para la agrupación de partidospor temporadas  y competiciones
+/// </summary>
 public class EDICIONDTO
 {
     public string Temporada { get; set; }
     public string IdCompe { get; set; }
        public List<GamesDTO> Partidos { get; set; }
 }
+/// <summary>
+/// DTO para ka agrupación de alineaciones de jugadores por club, partido y jugador
+/// </summary>
 public class PLAYERALINEADODTO
 {
     public string gameId { get; set; }
@@ -298,6 +336,9 @@ public class PLAYERALINEADODTO
     
     public List<GameLineupsDTO> playerAlineados { get; set; }
 }
+/// <summary>
+/// DTO para la agrupación de eventos por partido
+/// </summary>
 public class EVENTDTO
 {
     public string gameId { get; set; }    
