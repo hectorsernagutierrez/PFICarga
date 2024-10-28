@@ -68,7 +68,7 @@ namespace FutbolOntology.CargaPFI
                 torneo.IdsSchema_organizer = organizersuris;
 
                 Console.WriteLine("Empiezo a cargar temporadas de " + torneo.Schema_name + " " + torneo.Schema_identifier);                
-                torneo.IDsEschema_subEvent = CargarTemporadas(torneo.Schema_identifier, 2018, 2024, rutaPartidos,torneo.Schema_name);
+                torneo.IdsEschema_subEvent = CargarTemporadas(torneo.Schema_identifier, 2018, 2024, rutaPartidos,torneo.Schema_name);
                 Console.WriteLine("Termino de cargar temporadas de " + torneo.Schema_name + " " + torneo.Schema_identifier);
                 Console.WriteLine("Subo  " + torneo.Schema_name + " " + torneo.Schema_identifier);
                 apiRecursos.ChangeOntology(ontologiaTorneo);
