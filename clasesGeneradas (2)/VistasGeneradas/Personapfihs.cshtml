@@ -91,6 +91,15 @@
 </span>
 </div>
 }
+@if(!string.IsNullOrEmpty(pPerson.Eschema_foot))
+{
+<div>
+		<strong>@pPerson.GetLabel(nameof(pPerson.Eschema_foot),idiomaUsuario)</strong>
+<span class="values">
+		<p property="@pPerson.GetPropertyURI(nameof(pPerson.Eschema_foot))"> @pPerson.Eschema_foot[(int)idiomaUsuario] </p>
+</span>
+</div>
+}
 @if(!string.IsNullOrEmpty(pPerson.Schema_description))
 {
 <div>

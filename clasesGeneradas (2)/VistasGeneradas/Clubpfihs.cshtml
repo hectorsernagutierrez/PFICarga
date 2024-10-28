@@ -1,6 +1,5 @@
 @using ClubpfihsOntology;
 @using TemporadapfihsOntology;
-@using TorneopfihsOntology;
 @using PersonapfihsOntology;
 @using PersonapfihsOntology;
 @using GnossBase;
@@ -42,6 +41,15 @@
 		<strong>@pSportsClub.GetLabel(nameof(pSportsClub.Schema_logo),idiomaUsuario)</strong>
 <span class="values">
 
+</span>
+</div>
+}
+@if(!string.IsNullOrEmpty(pSportsClub.Eschema_league))
+{
+<div>
+		<strong>@pSportsClub.GetLabel(nameof(pSportsClub.Eschema_league),idiomaUsuario)</strong>
+<span class="values">
+		<p property="@pSportsClub.GetPropertyURI(nameof(pSportsClub.Eschema_league))"> @pSportsClub.Eschema_league[(int)idiomaUsuario] </p>
 </span>
 </div>
 }
@@ -92,10 +100,7 @@
 <div>
 		<strong>@pSportsClub.GetLabel(nameof(pSportsClub.Schema_foundingDate),idiomaUsuario)</strong>
 <span class="values">
-		@foreach(date prop in pSportsClub.Schema_foundingDate)
-		{
-			<p property="@pSportsClub.GetPropertyURI(nameof(pSportsClub.Schema_foundingDate))"> @prop </p>
-		}
+		<p property="@pSportsClub.GetPropertyURI(nameof(pSportsClub.Schema_foundingDate))"> @pSportsClub.Schema_foundingDate </p>
 </span>
 </div>
 }
@@ -239,6 +244,18 @@ if(pPerson.Schema_name!=null)
 		<strong>@pPerson.GetLabel(nameof(pPerson.Schema_name),idiomaUsuario)</strong>
 <span>
 <p property ="@pPerson.GetPropertyURI(nameof(pPerson.Schema_name))"> @pPerson.Schema_name </p>
+</span>
+</div>
+}
+}
+void PintarPersonLinedUp(PersonLinedUp pPersonLinedUp, GnossOCBase.LanguageEnum idiomaUsuario) {
+
+if(pPersonLinedUp.Schema_name!=null)
+{
+<div>
+		<strong>@pPersonLinedUp.GetLabel(nameof(pPersonLinedUp.Schema_name),idiomaUsuario)</strong>
+<span>
+<p property ="@pPersonLinedUp.GetPropertyURI(nameof(pPersonLinedUp.Schema_name))"> @pPersonLinedUp.Schema_name </p>
 </span>
 </div>
 }
