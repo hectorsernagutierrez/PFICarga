@@ -432,6 +432,7 @@ namespace FutbolOntology.CargaPFI
 
                 foreach (var jugador in jugadoresUnicos)
                 {
+                    Console.WriteLine($@"Cargo Jugador {jugador.playerName}");
                     jugadoresuri.Add(torneo.getPlayerUrl(jugador.PlayerId, jugador.playerName, rutaDirectorioValoracion));
                 }
                 planti.IdsSchema_athlete = jugadoresuri;
