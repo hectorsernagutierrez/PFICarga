@@ -180,11 +180,13 @@ string competitionsFile = @"Dataset/competitions.csv";
 string gameEventsFile = @"Dataset/game_events.csv";
 string gameLineupsFile = @"Dataset/game_lineups.csv";
 string gamesFile = @"Dataset/games.csv";
+string gamesFiltradaFile = @"Dataset/gamesfiltrado.csv";
 string playerValuationsFile = @"Dataset/player_valuations.csv";
 string playersFile = @"Dataset/players.csv";
 string playersESITFile = @"Dataset/players_filtrado.csv";
 string transfersFile = @"Dataset/transfers.csv";
 string consultaFile = @"Dataset/consulta.csv";
+string CompeFiltradaFile = @"Dataset/compefiltrada.csv";
 
 string appearancesFilePath = Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase, appearancesFile);
 string appearancesESITFilePath = Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase, appearancesESITFile);
@@ -202,6 +204,8 @@ string playersFilePath = Path.Combine(AppDomain.CurrentDomain.SetupInformation.A
 string playersESITFilePath = Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase, playersESITFile);
 string transfersFilePath = Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase, transfersFile);
 string consultaFilePath = Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase, consultaFile);
+string CompeFiltradaFilePath = Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase, CompeFiltradaFile);
+string GameFiltradaFilePath = Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase, gamesFiltradaFile);
 
 
 
@@ -213,24 +217,31 @@ string consultaFilePath = Path.Combine(AppDomain.CurrentDomain.SetupInformation.
 
 //#endregion cargar jugadoers
 
-#region cargar clubs
-FutbolOntology.CargaPFI.Club c = new FutbolOntology.CargaPFI.Club(mResourceApi);
-//Dictionary<string,List<DateTime>> d = new Dictionary<string,List<DateTime>>();
-//DTOService service = new DTOService();
-//List<AppearancesDTO> appearances = service.ReadAppearances(appearancesESITFile);
+//#region cargar clubs
+//FutbolOntology.CargaPFI.Club c = new FutbolOntology.CargaPFI.Club(mResourceApi);
+////Dictionary<string,List<DateTime>> d = new Dictionary<string,List<DateTime>>();
+////DTOService service = new DTOService();
+////List<AppearancesDTO> appearances = service.ReadAppearances(appearancesESITFile);
 
-//Dictionary<string, List<AppearancesDTO>> appearancesClub = c.AgruparPorClub(appearances);
+////Dictionary<string, List<AppearancesDTO>> appearancesClub = c.AgruparPorClub(appearances);
 
-//ServiceWIKIDATA.LeerClub("girona", out string descripcion, out string logo, out string cp, out string calle, out string ciudad, out string pais, out List<DateTime> fundacion, out List<string> awards, out List<string> alias);
-//   foreach(var s in alias)
-//{
-//    Console.WriteLine(s);
-//}
-c.CargarTodosClub(clubsESFilePath, appearancesESITFilePath, playerValuationsFilePath);
-c.CargarTodosClub(clubsITFilePath, appearancesESITFile, playerValuationsFilePath);
+////ServiceWIKIDATA.LeerClub("girona", out string descripcion, out string logo, out string cp, out string calle, out string ciudad, out string pais, out List<DateTime> fundacion, out List<string> awards, out List<string> alias);
+////   foreach(var s in alias)
+////{
+////    Console.WriteLine(s);
+////}
+//c.CargarTodosClub(clubsESFilePath, appearancesESITFilePath, playerValuationsFilePath);
+//c.CargarTodosClub(clubsITFilePath, appearancesESITFile, playerValuationsFilePath);
 
-//ServiceWIKIDATA.LeerClub("FC Barcelona", out string descr, out string logo, out string cp, out string calle, out string ciudad, out string pais, out List<DateTime> lfund, out List<string> prem, out List<string> alias);
-//Console.WriteLine(descr);
-//Dictionary<string, Dictionary<string, object>> dic = ServiceWIKIDATA.LeerClub2("FC Barcelona", 3000, 0);
-//Console.WriteLine("descr");
-#endregion cargar clubs
+////ServiceWIKIDATA.LeerClub("FC Barcelona", out string descr, out string logo, out string cp, out string calle, out string ciudad, out string pais, out List<DateTime> lfund, out List<string> prem, out List<string> alias);
+////Console.WriteLine(descr);
+////Dictionary<string, Dictionary<string, object>> dic = ServiceWIKIDATA.LeerClub2("FC Barcelona", 3000, 0);
+////Console.WriteLine("descr");
+//#endregion cargar clubs
+
+#region Torneo
+TorneoEdicionPartido tep = new TorneoEdicionPartido(mResourceApi);
+tep.CargarTodosTorneos(CompeFiltradaFilePath, GameFiltradaFilePath);
+
+
+#endregion

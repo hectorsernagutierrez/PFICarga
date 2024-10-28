@@ -15,10 +15,10 @@ using System.Globalization;
 using System.Collections;
 using Gnoss.ApiWrapper.Exceptions;
 using System.Diagnostics.CodeAnalysis;
-using Person = PersonapfihsOntology.Person;
 using SportsClub = ClubpfihsOntology.SportsClub;
+using Person = PersonapfihsOntology.Person;
 
-namespace TorneopfihsOntology
+namespace PartidopfihsOntology
 {
 	[ExcludeFromCodeCoverage]
 	public class SportsTeam : GnossOCBase
@@ -29,6 +29,11 @@ namespace TorneopfihsOntology
 		{
 			mGNOSSID = pSemCmsModel.Entity.Uri;
 			mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
+			SemanticPropertyModel propSchema_subOrganization = pSemCmsModel.GetPropertyByPath("https://schema.org/subOrganization");
+			if (propSchema_subOrganization != null && propSchema_subOrganization.PropertyValues.Count > 0 && propSchema_subOrganization.PropertyValues[0].RelatedEntity != null)
+			{
+				Schema_subOrganization = new SportsClub(propSchema_subOrganization.PropertyValues[0].RelatedEntity,idiomaUsuario);
+			}
 			Schema_coach = new List<Person>();
 			SemanticPropertyModel propSchema_coach = pSemCmsModel.GetPropertyByPath("https://schema.org/coach");
 			if(propSchema_coach != null && propSchema_coach.PropertyValues.Count > 0)
@@ -53,17 +58,17 @@ namespace TorneopfihsOntology
 					}
 				}
 			}
-			SemanticPropertyModel propSchema_subOrganization = pSemCmsModel.GetPropertyByPath("https://schema.org/subOrganization");
-			if (propSchema_subOrganization != null && propSchema_subOrganization.PropertyValues.Count > 0 && propSchema_subOrganization.PropertyValues[0].RelatedEntity != null)
-			{
-				Schema_subOrganization = new SportsClub(propSchema_subOrganization.PropertyValues[0].RelatedEntity,idiomaUsuario);
-			}
 			this.Eschema_classification = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("https://schema.org/extended/classification"));
 		}
 
 		public virtual string RdfType { get { return "https://schema.org/SportsTeam"; } }
 		public virtual string RdfsLabel { get { return "https://schema.org/SportsTeam"; } }
 		public OntologyEntity Entity { get; set; }
+
+		[LABEL(LanguageEnum.es,"Club:")]
+		[RDFProperty("https://schema.org/subOrganization")]
+		public  SportsClub Schema_subOrganization  { get; set;} 
+		public string IdSchema_subOrganization  { get; set;} 
 
 		[LABEL(LanguageEnum.en,"Coach")]
 		[LABEL(LanguageEnum.es,"Entrenador")]
@@ -76,11 +81,6 @@ namespace TorneopfihsOntology
 		[RDFProperty("https://schema.org/athlete")]
 		public  List<PersonLinedUp> Schema_athlete { get; set;}
 
-		[LABEL(LanguageEnum.es,"Club:")]
-		[RDFProperty("https://schema.org/subOrganization")]
-		public  SportsClub Schema_subOrganization  { get; set;} 
-		public string IdSchema_subOrganization  { get; set;} 
-
 		[LABEL(LanguageEnum.es,"Clas.")]
 		[RDFProperty("https://schema.org/extended/classification")]
 		public  int? Eschema_classification { get; set;}
@@ -89,8 +89,8 @@ namespace TorneopfihsOntology
 		internal override void GetProperties()
 		{
 			base.GetProperties();
-			propList.Add(new ListStringOntologyProperty("schema:coach", this.IdsSchema_coach));
 			propList.Add(new StringOntologyProperty("schema:subOrganization", this.IdSchema_subOrganization));
+			propList.Add(new ListStringOntologyProperty("schema:coach", this.IdsSchema_coach));
 			propList.Add(new StringOntologyProperty("eschema:classification", this.Eschema_classification.ToString()));
 		}
 

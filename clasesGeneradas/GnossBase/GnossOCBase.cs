@@ -115,10 +115,11 @@ namespace GnossBase
 			prefList.Add("xmlns:schema=\"https://schema.org/\"");
 			prefList.Add("xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"");
 			prefList.Add("xmlns:xsd=\"http://www.w3.org/2001/XMLSchema#\"");
-			prefList.Add("xmlns:gnossg=\"http://gnossg.gnoss.com/\"");
 			prefList.Add("xmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\"");
 			prefList.Add("xmlns:owl=\"http://www.w3.org/2002/07/owl#\"");
 			prefList.Add("xmlns:eschema=\"https://schema.org/extended/\"");
+			prefList.Add("xmlns:gnossg=\"http://gnossg.gnoss.com/\"");
+			prefList.Add("xmlns:propio=\"http://www.domainpropio.com#\"");
 			prefList.Add("xmlns:skos2=\"http://www.w3.org/2008/05/skos#\"");
 			prefList.Add("xmlns:dc=\"http://purl.org/dc/elements/1.1/\"");
 
